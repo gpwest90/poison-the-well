@@ -1,0 +1,15 @@
+body {
+  width: 960px;
+  height: 720px;
+  margin: auto;
+  margin-top: 40px;
+  border: thin solid lightgray;
+}
+section {
+  width: 100%;
+  height: 100%;
+}
+.text-left { text-align: left;}
+.text-center {text-align: center;}
+.hidden { display: none;}
+

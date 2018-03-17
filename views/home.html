@@ -1,0 +1,43 @@
+<div id='join-game' class='hidden text-center'>
+  <h2>Welcome new player! There are currently {{player_count}} other players waiting. Enter your name and join:</h2>
+
+  <form method="POST" action="/player" class="form">
+    <label>Name:</label>
+    <input type="text" id="name" name="name" value="Richard" />
+
+    <label>Role:</label>
+    <select id="character-select" name="character_id">
+      {{#each characters}}
+        <option value="{{this.uniq_id}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+    <button name="save" type="submit">Join</button>
+  </form>
+</div>
+
+<div id='reconnect-to-game' class='hidden text-center'>
+  <h2>Welcome back <span class='_player-name'></span></h2>
+  <a href='/players'>Rejoin Game</a>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+var socket = io.connect("{{root_url}}");
+var player_id = localStorage.getItem("playerID");
+
+socket.on('connect', function(data) {
+  socket.emit('join', player_id);
+});
+
+socket.on('not-found', function() {
+  var menu = document.getElementById("join-game");
+  menu.style.display = "block";
+});
+
+socket.on('reconnect', function() {
+  var menu = document.getElementById("reconnect-to-game");
+  menu.style.display = "block";
+});
+
+</script>

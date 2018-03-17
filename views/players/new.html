@@ -1,0 +1,13 @@
+<div id='connect-to-game' class='text-center'>
+  <h2>Welcome {{player.name}}</h2>
+  <a href='/players'>Join Game</a>
+</div>
+
+<script type="text/javascript">
+
+var player_id = "{{player.uniq_id}}";
+
+if (player_id) {
+  localStorage.setItem("playerID", player_id);
+}
+</script>
