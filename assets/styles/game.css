@@ -1,0 +1,171 @@
+.gameboard {
+  position: relative;
+}
+
+.board {
+  z-index: 0;
+}
+
+.trade-box {
+  position: absolute;
+  background: white;
+  z-index: 1;
+  opacity: .5;
+}
+
+.horizontal-box {
+  width: 157px;
+  height: 76px;
+}
+
+.vertical-box {
+  width: 105;
+  height: 150px;
+}
+
+.player {
+  position: absolute;
+  z-index: 2;
+  background: green;
+}
+
+.player .player-image {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.player .player-name {
+  position: absolute;
+  top: -13px;
+  left: 3px;
+  font-size: 12px;
+  width: 120px;
+  z-index: 4;
+}
+
+.vertical-left .player .player-name {
+  left: -70px;
+}
+
+.horizontal-box .player {
+  top: 14px;
+}
+
+.vertical-box .player {
+  top: 16px;
+}
+
+.vertical-left .player {
+  left: 73px;
+}
+
+.box-1 {
+  left: 149px;
+  top: 0px;
+}
+
+.box-5 {
+  left: 405px;
+  top: 0px;
+}
+
+.box-2 {
+  left: 615px;
+  top: 144px;
+} 
+
+.box-6 {
+  left: 615px;
+  top: 371px;
+}
+
+.box-3 {
+  left: 443px;
+  top: 644px;
+}
+
+.box-7 {
+  left: 143px;
+  top: 644px;
+}
+
+.box-4 {
+  left: 0px;
+  top: 400px;
+}
+
+.box-8 {
+  left: 0px;
+  top: 148px;
+}
+
+
+.resource-box {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  z-index: 3;
+}
+
+.resource {
+  position: absolute;
+  left: 40px;
+  top: 21px;
+}
+
+.resource:nth-child(4n+1) {
+  left: 40px;
+}
+
+.resource:nth-child(4n+2) {
+  left: 69px;
+}
+
+.resource:nth-child(4n+3) {
+  left: 98px;
+}
+
+.resource:nth-child(4n+4) {
+  left: 126px;
+}
+
+.resource:nth-child(1n+5) {
+  top: 50px;
+}
+
+
+.vertical-box .resource {
+  position: absolute;
+  left: 37px;
+  top: 34px;
+}
+
+.vertical-box .resource:nth-child(2n) {
+  left: 37px;
+}
+
+.vertical-box .resource:nth-child(2n+1) {
+  left: 66px;
+}
+
+.vertical-box .resource:nth-child(n+3) {
+   top: 63px;
+}
+
+.vertical-box .resource:nth-child(n+5) {
+   top: 92px;
+}
+
+.vertical-box .resource:nth-child(n+7) {
+  top: 121px;
+}
+
+.vertical-left .resource:nth-child(2n) {
+  left: 18px;
+}
+
+.vertical-left .resource:nth-child(2n+1) {
+  left: 47px;
+}
+

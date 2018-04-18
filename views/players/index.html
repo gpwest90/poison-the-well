@@ -1,1 +1,32 @@
-<h2>Our players: {{player_list}}<h2>
+<div class="text-center clicker">
+  <h2>Waiting for other players<h2>
+</div>
+
+<div class='padded' id='player-list'>
+  {{~#each players~}}
+    {{~> player_card this ~}}
+  {{~/each~}}
+</div>
+
+<script>
+
+var socket = io.connect("{{root_url}}");
+var player_id = localStorage.getItem("playerID");
+
+// socket.on('connect', function(data) {
+//   socket.emit('join', player_id);
+// });
+
+socket.on('new-player', function(data) {
+  $('#player-list').append("<div class='player player__waiting text-center wide4 spacer-bottom'><div class='player__name'>"+data.player.name+"</div><div class='player__sprite'><img src='images/characters"+data.player.character.name+".png'></div><div class='player__role'>"+data.player.character.name+"</div></div>");
+});
+
+// socket.on('reconnect', function() {
+//   sock
+//   var menu = document.getElementById("reconnect-to-game");
+//   menu.style.display = "block";
+// });
+
+
+
+</script>

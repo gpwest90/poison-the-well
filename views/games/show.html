@@ -1,0 +1,162 @@
+<div class="game">
+  <div class="gameboard">
+    <img src='images/gameboard/courtyard.png' class="board">
+    <div class="trade-box horizontal-box box-1">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box horizontal-box box-5">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box vertical-box box-2">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box vertical-box box-6">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box horizontal-box box-3">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box horizontal-box box-7">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box vertical-box vertical-left box-4">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+    <div class="trade-box vertical-box vertical-left box-8">
+      <div class='player'>
+        <div class='player-name'></div>
+        <div class='player-image'></div>
+      </div>
+      <div class='resource-box'>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+      </div>
+    </div>
+  </div>
+  <div class="sidepanel">
+
+  </div>
+</div>
+
+<script type="text/javascript">
+var socket = io.connect("{{root_url}}");
+var player_id = localStorage.getItem("playerID");
+
+socket.on('connect', function(data) {
+  socket.emit('get-match-data', player_id);
+});
+
+var review;
+socket.on('match-data', function(data) {
+  review = data;
+  players = data.players;
+
+  for (var i=0; i < players.length; i++) {
+    set_players(i+1, players[i]);
+  }
+});
+
+function set_players(pos, player) {
+  var base_box = $('.box-'+pos);
+  base_box.find('.player .player-name').html(player.name);
+  base_box.find('.player .player-image').html("<img src='images/characters/"+player.character.name+".png'>");
+}
+</script>
+

@@ -12,4 +12,31 @@ section {
 .text-left { text-align: left;}
 .text-center {text-align: center;}
 .hidden { display: none;}
+.padded { padding: 10px;}
+.spacer { margin-top: 10px;}
+.spacer-bottom { margin-bottom: 10px;}
 
+.player__waiting {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  display: inline-block;
+  border: thin solid lightgray;
+}
+
+.wide4 {
+  width: 22%;
+  margin-left: 4%;
+}
+
+.wide4:nth-child(4n+1) {
+  margin-left: 0;
+}
+
+.errors {
+  color: red;
+}
+
+.disabled {
+  opacity: 0.5;
+}

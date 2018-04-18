@@ -11,6 +11,17 @@ const Game = require('./models/game');
 
 var game = new Game();
 
+// Test Data
+game.connectNewPlayer("Page", 0);
+game.connectNewPlayer("Richard", 1);
+game.connectNewPlayer("Evan", 2);
+game.connectNewPlayer("Sam", 3);
+game.connectNewPlayer("John", 4);
+game.connectNewPlayer("Elliot", 5);
+//----
+
+
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -36,6 +47,10 @@ io.on('connection', function(client) {
   client.on('disconnect', function () {
     console.log('Client disconnected');
   });
+
+  client.on('get-match-data', function(player_id) {
+    client.emit('match-data',{players: game.players});
+  });
 });
 
 
@@ -45,7 +60,8 @@ app.set('view engine', 'html');
 app.engine('html', exphbs({
   defaultLayout: 'main',
   extname: '.html',
-  layoutsDir: path.join(__dirname, 'views/layouts')
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  partialsDir: path.join(__dirname, '/views/partials/')
 }))
 app.set('views', path.join(__dirname, 'views'))
 
@@ -64,25 +80,46 @@ server.listen(port, (err) => {
 // Home
 app.get('/', (req, res) => {
   res.render('home', {
-    characters: game.listOfCharacters(),
+    errors: req.query.errors,
+    characters: game.listOfAvailableCharacters(),
     player_count: game.numPlayers(),
     root_url: 'localhost:'+port
   })
 })
 
 // Players
+app.post('/player', (req, res) => {
+  var player = game.connectNewPlayer(req.body.name, parseInt(req.body.character_id));
+  if (player == null) {
+    var errors = "Character was already selected";
+    if (req.body.character_id == null) {
+      errors = "Please select a character";
+    }
+    res.redirect('/?errors='+errors);
+  } else {
+    io.sockets.emit('new-player',{player: player});
+    res.render('players/new', {
+      player: player
+    })
+  }
+})
+
 app.get('/players', (req, res) => {
   res.render('players/index', {
-    player_list: game.playerNames()
+    players: game.players
   })
 })
 
-app.post('/player', (req, res) => {
-  var player = game.connectNewPlayer(req.body.name, req.body.character_id);
-  res.render('players/new', {
-    player: player
-  })
-  // res.redirect('/players');
+// Game
+
+app.get('/game', (req, res) => {
+  if (game.has_started == false) {
+    res.render('games/show', {
+      game: game
+    });
+  } else {
+    res.redirect('/?errors=' + "No game has started yet");
+  }
 })
 
 

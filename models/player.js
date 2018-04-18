@@ -1,7 +1,9 @@
 class Player {
-  constructor(name) {
+  constructor(name, character) {
     this.name = name;
     this.uniq_id = Player.makeId();
+    character.is_selected = true;
+    this.character = character;
   }
 
   static makeId() {
