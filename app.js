@@ -20,8 +20,6 @@ game.connectNewPlayer("John", 4);
 game.connectNewPlayer("Elliot", 5);
 //----
 
-
-
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -120,6 +118,11 @@ app.get('/game', (req, res) => {
   } else {
     res.redirect('/?errors=' + "No game has started yet");
   }
+})
+
+app.get('/debug', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ game: game }, null, 3));
 })
 
 

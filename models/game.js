@@ -8,6 +8,7 @@ class Game {
   constructor() {
     this.player_count = 0;
     this.players = [];
+    this.resources = [];
     this.has_started = false;
   }
 
@@ -20,6 +21,7 @@ class Game {
     if (character && character.is_selected == false) {
       var player = new Player(name, character);
       this.players[this.player_count] = player;
+      this.resources[this.player_count] = character.resource;
       this.player_count ++;
       return player;
     }
@@ -32,6 +34,10 @@ class Game {
 
   playerList() {
     return this.players;
+  }
+
+  resourceList() {
+    return this.resources;
   }
 
   // playerNames() {

@@ -1,9 +1,22 @@
+const Resource = require('./resource');
+
 class Player {
   constructor(name, character) {
     this.name = name;
     this.uniq_id = Player.makeId();
     character.is_selected = true;
     this.character = character;
+    this.extra_lives = 3;
+    this.trade_inventory = [
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource)
+    ];
   }
 
   static makeId() {

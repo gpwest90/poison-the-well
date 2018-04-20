@@ -6,7 +6,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -22,7 +22,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -38,7 +38,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -54,7 +54,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -70,7 +70,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -86,7 +86,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -102,7 +102,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -118,7 +118,7 @@
         <div class='player-name'></div>
         <div class='player-image'></div>
       </div>
-      <div class='resource-box'>
+      <div class='trade-inventory'>
         <div class='resource'></div>
         <div class='resource'></div>
         <div class='resource'></div>
@@ -157,6 +157,12 @@ function set_players(pos, player) {
   var base_box = $('.box-'+pos);
   base_box.find('.player .player-name').html(player.name);
   base_box.find('.player .player-image').html("<img src='images/characters/"+player.character.name+".png'>");
+
+  base_box.find('.trade-inventory .resource img').remove();
+  inventory = player.trade_inventory;
+  for (var i = 0; i < inventory.length; i++ ) {
+    base_box.find('.trade-inventory .resource').eq(i).html("<img src='images/resources/"+inventory[i].name+".png'>");
+  }
 }
 </script>
 
