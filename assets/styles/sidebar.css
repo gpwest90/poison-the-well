@@ -1,0 +1,25 @@
+.sidebar {
+  position: absolute;
+  top: 0px;
+  left: 719px;
+  border-left: thin solid gray;
+  font-size: 12px;
+}
+
+.abs {
+  position: absolute;
+}
+
+.sidebar .layout {
+  z-index: 0;
+}
+
+.sidebar .food-requirement {
+  left: 50px;
+  top: 8px;
+}
+
+.sidebar .victory-point-requirement {
+  left: 50px;
+  top: 40px;
+}

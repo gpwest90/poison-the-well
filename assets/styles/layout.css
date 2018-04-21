@@ -4,6 +4,7 @@ body {
   margin: auto;
   margin-top: 40px;
   border: thin solid lightgray;
+  position: relative;
 }
 section {
   width: 100%;
@@ -11,6 +12,7 @@ section {
 }
 .text-left { text-align: left;}
 .text-center {text-align: center;}
+.text-right { text-align: right;}
 .hidden { display: none;}
 .padded { padding: 10px;}
 .spacer { margin-top: 10px;}

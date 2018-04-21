@@ -1,5 +1,7 @@
 .gameboard {
-  position: relative;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 .board {
