@@ -110,29 +110,29 @@
   z-index: 3;
 }
 
-.resource {
+.gameboard .resource {
   position: absolute;
   left: 40px;
   top: 21px;
 }
 
-.resource:nth-child(4n+1) {
+.gameboard.resource:nth-child(4n+1) {
   left: 40px;
 }
 
-.resource:nth-child(4n+2) {
+.gameboard .resource:nth-child(4n+2) {
   left: 69px;
 }
 
-.resource:nth-child(4n+3) {
+.gameboard .resource:nth-child(4n+3) {
   left: 98px;
 }
 
-.resource:nth-child(4n+4) {
+.gameboard .resource:nth-child(4n+4) {
   left: 126px;
 }
 
-.resource:nth-child(1n+5) {
+.gameboard .resource:nth-child(1n+5) {
   top: 50px;
 }
 

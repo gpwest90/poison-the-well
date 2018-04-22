@@ -6,20 +6,162 @@
   font-size: 12px;
 }
 
-.abs {
+.sidebar img {
+  opacity: .5;
+}
+
+.abs, .sidebar div {
   position: absolute;
+}
+
+.sidebar .section {
+  left: 0px;
+  width: 240px;
+  border: thin solid blue;
+  margin-top: -1px;
+  margin-left: -1px;
 }
 
 .sidebar .layout {
   z-index: 0;
 }
 
-.sidebar .food-requirement {
-  left: 50px;
+.sidebar .header-info {
+  top: 0px;
+  height: 80px;
+}
+
+.header-info .player-name {
+  left: 8px;
   top: 8px;
 }
 
-.sidebar .victory-point-requirement {
-  left: 50px;
-  top: 40px;
+.header-info .player-image {
+  top: 20px;
+  left: 8px;
+}
+
+
+.header-info .food-requirement {
+  left: 51px;
+  top: 4px;
+}
+
+.header-info .victory-point-requirement {
+  left: 51px;
+  top: 33px;
+}
+
+.header-info .resource {
+  top: 4px;
+}
+
+.header-info .label {
+  left: 0px;
+  top: 8px;
+  width: 73px;
+}
+
+.header-info .resource-list {
+  left: 73px;
+}
+
+/* Worker Style */
+.sidebar .worker-info {
+  top: 94px;
+  height: 91px;
+}
+
+
+/* Home Inventory */
+.sidebar .home-inventory {
+  top: 196;
+  height: 64px;
+}
+
+.home-inventory .resource-long-list {
+  left: 8px;
+  top: 8px;
+}
+
+
+/* Market Inventory*/
+.sidebar .market-inventory {
+  top: 271px;
+  height: 64px;
+}
+
+.market-inventory .resource-list {
+  top: 8px;
+  left: 66px;
+}
+
+
+/* Trade Inventory */
+.sidebar .tradebox {
+  bottom: 0px;
+  height: 260px;
+}
+
+.sidebar .tradebox .my-trade {
+
+}
+
+.my-trade .resource-list {
+  
+}
+
+.sidebar .tradebox .their-trade {
+
+}
+
+.their-trade .resource-list {
+  
+}
+
+
+
+/* Shared inventory */
+.resource-list .resource:nth-child(4n+1) {
+  left: 0px;
+}
+.resource-list .resource:nth-child(4n+2) {
+  left: 29px;
+}
+.resource-list .resource:nth-child(4n+3) {
+  left: 58px;
+}
+.resource-list .resource:nth-child(4n+4) {
+  left: 87px;
+}
+.resource-list .resource:nth-child(n+5) {
+  top: 29px;
+}
+
+.resource-long-list .resource:nth-child(8n+1) {
+  left: 0px;
+}
+.resource-long-list .resource:nth-child(8n+2) {
+  left: 29px;
+}
+.resource-long-list .resource:nth-child(8n+3) {
+  left: 58px;
+}
+.resource-long-list .resource:nth-child(8n+4) {
+  left: 87px;
+}
+.resource-long-list .resource:nth-child(8n+5) {
+  left: 116px;
+}
+.resource-long-list .resource:nth-child(8n+6) {
+  left: 145px;
+}
+.resource-long-list .resource:nth-child(8n+7) {
+  left: 174px;
+}
+.resource-long-list .resource:nth-child(8n+8) {
+  left: 203px;
+}
+.resource-long-list .resource:nth-child(n+9) {
+  top: 29px;
 }
