@@ -27,29 +27,29 @@
 }
 
 .sidebar .header-info {
-  top: 0px;
-  height: 80px;
+  top: 37px;
+  height: 88px;
 }
 
 .header-info .player-name {
   left: 8px;
-  top: 8px;
+  top: 0px;
 }
 
 .header-info .player-image {
-  top: 20px;
+  top: 16px;
   left: 8px;
 }
 
 
 .header-info .food-requirement {
   left: 51px;
-  top: 4px;
+  top: 12px;
 }
 
 .header-info .victory-point-requirement {
   left: 51px;
-  top: 33px;
+  top: 41px;
 }
 
 .header-info .resource {
@@ -68,16 +68,57 @@
 
 /* Worker Style */
 .sidebar .worker-info {
-  top: 94px;
+  top: 162px;
   height: 91px;
 }
 
+.worker-info .title {
+  top: -10px;
+}
+
+.worker-info .worker {
+  left: 8px;
+}
+.worker-info .worker select {
+  width: 108px;
+}
+
+.worker-info .worker:nth-child(2n+1) {
+  top: 10px;
+}
+
+.worker-info .worker:nth-child(2n+2) {
+  top: 50px;
+}
+
+.worker-info .worker:nth-child(n+3) {
+  left: 124px;
+}
+
+.worker-info .dead {
+  right: 8px;
+  top: -16px;
+}
+.worker-info .dead:nth-child(4n+2) {
+  right: 37px;
+}
+.worker-info .dead:nth-child(4n+3) {
+  right: 66px;
+}
+.worker-info .dead:nth-child(4n+4) {
+  right: 95px;
+}
 
 /* Home Inventory */
 .sidebar .home-inventory {
-  top: 196;
+  top: 292px;
   height: 64px;
 }
+
+.home-inventory .title {
+  top: -10px;
+}
+
 
 .home-inventory .resource-long-list {
   left: 8px;
@@ -87,8 +128,12 @@
 
 /* Market Inventory*/
 .sidebar .market-inventory {
-  top: 271px;
+  top: 391px;
   height: 64px;
+}
+
+.market-inventory .title {
+  top: -10px;
 }
 
 .market-inventory .resource-list {
@@ -103,8 +148,13 @@
   height: 260px;
 }
 
-.sidebar .tradebox .my-trade {
+.tradebox .title {
+  top: 10px;
+}
 
+.sidebar .tradebox .my-trade {
+  top: 34px;
+  left: 114px;
 }
 
 .my-trade .resource-list {
@@ -112,7 +162,8 @@
 }
 
 .sidebar .tradebox .their-trade {
-
+  top: 190px;
+  left: 114px;
 }
 
 .their-trade .resource-list {

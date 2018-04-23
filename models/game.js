@@ -12,8 +12,8 @@ class Game {
     this.has_started = false;
   }
 
-  findPlayerById(uniq_id) {
-    return findById(this.players, uniq_id);
+  getPlayerById(uniq_id) {
+    return getById(this.players, uniq_id);
   }
 
   connectNewPlayer(name, character_id) {
@@ -45,7 +45,7 @@ class Game {
   // }
 
   getCharacterById(uniq_id) {
-    return findById(characters, uniq_id);
+    return getById(characters, uniq_id);
   }
 
   listOfAvailableCharacters() {
@@ -54,7 +54,7 @@ class Game {
 
 }
 
-var findById = function(array, uniq_id) {
+var getById = function(array, uniq_id) {
   var pos = array.map(p => p.uniq_id).indexOf(uniq_id);
   return pos == -1 ? null : array[pos];
 }

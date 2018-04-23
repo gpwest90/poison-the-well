@@ -33,7 +33,7 @@ io.on('connection', function(client) {
 
   client.on('join', function(player_id) {
       console.log("Finding player: "+ player_id);
-      var player = game.findPlayerById(player_id);
+      var player = game.getPlayerById(player_id);
       console.log(player);
       if (player == null) {
         client.emit('not-found');
@@ -47,7 +47,10 @@ io.on('connection', function(client) {
   });
 
   client.on('get-match-data', function(player_id) {
-    client.emit('match-data',{players: game.players});
+    client.emit('match-data', {
+      game: game, 
+      player: game.getPlayerById(player_id)
+    });
   });
 });
 
@@ -111,6 +114,7 @@ app.get('/players', (req, res) => {
 // Game
 
 app.get('/game', (req, res) => {
+  debugger
   if (game.has_started == false) {
     res.render('games/show', {
       game: game

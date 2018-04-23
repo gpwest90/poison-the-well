@@ -134,72 +134,109 @@
     <img src='images/gameboard/sidebar.png' class="layout">
     <div class="section header-info">
       <div class='player-name'></div>
-      <div class='player-image'><img src='images/characters/base.png'></div>
+      <div class='player-image'></div>
       <div class="food-requirement">
         <div class='label'>Food:</div>
         <div class='resource-list'>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
         </div>
       </div>
       <div class="victory-point-requirement">
         <div class='label'>Victory Point:</div>
         <div class='resource-list'>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
         </div>
       </div>
     </div>
     <div class="section worker-info">
-
+      <div class='title'></div>
+      <div class='dead'></div>
+      <div class='dead'></div>
+      <div class='dead'></div>
+      <div class='dead'></div>
+      <div class="worker-list">
+         <div class='worker'>
+          <select id='worker1'>
+            {{~#each game.resources~}}
+              <option value="{{this}}">{{this}}</option>
+            {{~/each~}}
+          </select>
+        </div>
+         <div class='worker'>
+          <select id='worker2'>
+            {{~#each game.resources~}}
+              <option value="{{this}}">{{this}}</option>
+            {{~/each~}}
+          </select>
+        </div>
+         <div class='worker'>
+          <select id='worker3'>
+            {{~#each game.resources~}}
+              <option value="{{this}}">{{this}}</option>
+            {{~/each~}}
+          </select>
+        </div>
+         <div class='worker'>
+          <select id='worker4'>
+            {{~#each game.resources~}}
+              <option value="{{this}}">{{this}}</option>
+            {{~/each~}}
+          </select>
+        </div>
+      </div>
     </div>
     <div class="section home-inventory">
+      <div class='title'>Resources:</div>
       <div class='resource-long-list'>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
       </div>
     </div>
     <div class="section market-inventory">
+      <div class='title'>Resources at market:</div>
       <div class='resource-list'>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
-        <div class='resource'><img src='images/resources/wood.png'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
+        <div class='resource'></div>
       </div>
     </div>
     <div class="section tradebox">
+      <div class='title'>Trading:</div>
       <div class="my-trade">
         <div class='resource-list'>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
         </div>
       </div>
 
@@ -207,14 +244,14 @@
         <div class="player-image"></div>
         <div class="player-name"></div>
         <div class='resource-list'>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
-          <div class='resource'><img src='images/resources/wood.png'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
+          <div class='resource'></div>
         </div>
       </div>
     </div>
@@ -232,7 +269,12 @@ socket.on('connect', function(data) {
 var review;
 socket.on('match-data', function(data) {
   review = data;
-  players = data.players;
+
+  // DEBUG
+  data.player = data.game.players[3];
+
+  init_sidebar(data.player);
+  players = data.game.players;
 
   for (var i=0; i < players.length; i++) {
     set_players(i+1, players[i]);
@@ -242,13 +284,35 @@ socket.on('match-data', function(data) {
 function set_players(pos, player) {
   var base_box = $('.box-'+pos);
   base_box.find('.player .player-name').html(player.name);
-  base_box.find('.player .player-image').html("<img src='images/characters/"+player.character.name+".png'>");
+  base_box.find('.player .player-image').html(player.image);
 
   base_box.find('.trade-inventory .resource img').remove();
-  inventory = player.trade_inventory;
+  inventory = player.market_inventory;
   for (var i = 0; i < inventory.length; i++ ) {
-    base_box.find('.trade-inventory .resource').eq(i).html("<img src='images/resources/"+inventory[i].name+".png'>");
+    base_box.find('.trade-inventory .resource').eq(i).html(inventory[i].image);
   }
 }
+
+function init_sidebar(player) {
+  $('.sidebar .header-info .player-name').html(player.name);
+  $('.sidebar .header-info .player-image').html(player.image);
+  $('.sidebar .worker-info .title').html(player.character.name+"s:");
+  $(".sidebar .worker-info .worker option[value='"+player.character.resource+"']").html(player.character.resource+" x2");
+  update_sidebar(player);
+}
+
+function update_sidebar(player) {
+  // Set goals
+
+  // Set worker lives
+
+  // Set home inventory
+
+  // Set market inventory
+
+  // Set trade inventory
+
+}
+
 </script>
 

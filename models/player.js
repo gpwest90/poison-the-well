@@ -7,7 +7,17 @@ class Player {
     character.is_selected = true;
     this.character = character;
     this.extra_lives = 3;
-    this.trade_inventory = [
+    this.home_inventory = [
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource),
+      new Resource(character.resource)
+    ]
+    this.market_inventory = [
       new Resource(character.resource),
       new Resource(character.resource),
       new Resource(character.resource),
@@ -17,6 +27,8 @@ class Player {
       new Resource(character.resource),
       new Resource(character.resource)
     ];
+
+    this.image = "<img src='images/characters/"+character.name+".png'>";
   }
 
   static makeId() {
