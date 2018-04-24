@@ -18,6 +18,7 @@ game.connectNewPlayer("Evan", 2);
 game.connectNewPlayer("Sam", 3);
 game.connectNewPlayer("John", 4);
 game.connectNewPlayer("Elliot", 5);
+game.prepNewRound();
 //----
 
 app.use(bodyParser.urlencoded({

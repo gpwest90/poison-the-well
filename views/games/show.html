@@ -156,10 +156,12 @@
     </div>
     <div class="section worker-info">
       <div class='title'></div>
-      <div class='dead'></div>
-      <div class='dead'></div>
-      <div class='dead'></div>
-      <div class='dead'></div>
+      <div class='strikes'>
+        <div class='dead'></div>
+        <div class='dead'></div>
+        <div class='dead'></div>
+        <div class='dead'></div>
+      </div>
       <div class="worker-list">
          <div class='worker'>
           <select id='worker1'>
@@ -303,15 +305,41 @@ function init_sidebar(player) {
 
 function update_sidebar(player) {
   // Set goals
+  food_goal = player.food_goal
+  for (var i = 0; i < food_goal.length; i++ ) {
+    var img = resource_image(food_goal[i]);
+    $('.sidebar .header-info .food-requirement .resource').eq(i).html(img);
+  }
+  victory_goal = player.victory_goal
+  for (var i = 0; i < victory_goal.length; i++ ) {
+    var img = resource_image(victory_goal[i]);
+    $('.sidebar .header-info .victory-point-requirement .resource').eq(i).html(img);
+  }
 
   // Set worker lives
+  times_poisoned = 3 - player.extra_lives;
+  for (var i = 0; i < times_poisoned; i++ ) {
+    $('.sidebar .worker-info .dead').eq(i).html(resource_image('hit'));
+    $('.sidebar .worker-list select').eq(3-i).prop('disabled', 'disabled');
+  }
 
   // Set home inventory
-
+  home_inventory = player.home_inventory
+  for (var i = 0; i < home_inventory.length; i++ ) {
+    $('.sidebar .home-inventory .resource').eq(i).html(home_inventory[i].image);
+  }
   // Set market inventory
+  market_inventory = player.market_inventory
+  for (var i = 0; i < market_inventory.length; i++ ) {
+    $('.sidebar .market-inventory .resource').eq(i).html(market_inventory[i].image);
+  }
 
   // Set trade inventory
 
+}
+
+function resource_image(resource) {
+  return "<img src='images/resources/"+resource+".png'>"
 }
 
 </script>

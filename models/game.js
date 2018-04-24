@@ -12,6 +12,12 @@ class Game {
     this.has_started = false;
   }
 
+  prepNewRound() {
+    for (var i = 0; i < this.players.length; i++) {
+      this.players[i].setGoals(this.resources);
+    }
+  }
+
   getPlayerById(uniq_id) {
     return getById(this.players, uniq_id);
   }

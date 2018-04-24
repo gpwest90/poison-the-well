@@ -95,17 +95,22 @@
   left: 124px;
 }
 
-.worker-info .dead {
+.worker-info .strikes {
+  top: 0px;
+  right: 0px;
+}
+
+.strikes .dead {
   right: 8px;
   top: -16px;
 }
-.worker-info .dead:nth-child(4n+2) {
+.strikes .dead:nth-child(4n+2) {
   right: 37px;
 }
-.worker-info .dead:nth-child(4n+3) {
+.strikes .dead:nth-child(4n+3) {
   right: 66px;
 }
-.worker-info .dead:nth-child(4n+4) {
+.strikes .dead:nth-child(4n+4) {
   right: 95px;
 }
 
