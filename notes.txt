@@ -1,0 +1,38 @@
+Game setup:
+
+- Players can join from the root url
+- All players wait in waiting room until game starts
+- First connected player can start game once everyone has joined
+- Game start event boots everyone to the /game page
+- Game state `started` is true and no more players can join
+- Game phase is `morning`
+
+Gameloop cycle:
+
+1. 'Morning' Resource gathering
+  - All players pick the resources they'd like to farm for the day
+  # need ready indicator
+  - Once all players are done, game phase is `noon`
+
+2. 'Noon' Going to market
+  - Player goals are set (food reset, VP if blank)
+  - Players select which resources they want to take to market
+  - Once a player is done, their character appears at the market with their resources
+  - Once all players are done, the game phase is `evening`
+
+3. 'Evening' Trading
+  - players are free to trade until they're done
+  - Once a player is done, they're character and resources dissapear from the market
+  - Once all players are done, the game phase is `night`
+
+4. 'Night' Resource allocation
+  - players can spend their resources on their goals
+  # need ready indicator
+  - Once all players are done, the game phase is `sleep`
+
+5. 'Sleep' Game resolving
+  - If a player used a resource that was poisoned, their stats are adjusted
+  - If all players are dead, the necromancer wins (necromancer wins on ties)
+  - If enough VP have been bought, the traders win
+  - Game phase is `morning`
+  
