@@ -10,9 +10,8 @@
 
 .trade-box {
   position: absolute;
-  background: white;
   z-index: 1;
-  opacity: .5;
+  /*opacity: .5;*/
 }
 
 .horizontal-box {
@@ -84,12 +83,12 @@
 
 .box-3 {
   left: 443px;
-  top: 644px;
+  top: 628px;
 }
 
 .box-7 {
   left: 143px;
-  top: 644px;
+  top: 628px;
 }
 
 .box-4 {

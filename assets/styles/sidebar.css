@@ -7,7 +7,7 @@
 }
 
 .sidebar img {
-  opacity: .5;
+  /*opacity: .5;*/
 }
 
 .abs, .sidebar div {
@@ -17,9 +17,9 @@
 .sidebar .section {
   left: 0px;
   width: 240px;
-  border: thin solid blue;
+  /*border: thin solid blue;
   margin-top: -1px;
-  margin-left: -1px;
+  margin-left: -1px;*/
 }
 
 .sidebar .layout {
