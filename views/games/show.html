@@ -1,134 +1,23 @@
 <div class="game">
   <div class="gameboard">
     <img src='images/gameboard/courtyard.png' class="board">
-    <div class="trade-box horizontal-box box-1">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box horizontal-box box-5">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box vertical-box box-2">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box vertical-box box-6">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box horizontal-box box-3">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box horizontal-box box-7">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box vertical-box vertical-left box-4">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
-    <div class="trade-box vertical-box vertical-left box-8">
-      <div class='player'>
-        <div class='player-name'></div>
-        <div class='player-image'></div>
-      </div>
-      <div class='trade-inventory'>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-        <div class='resource'></div>
-      </div>
-    </div>
+    {{> player_market_stand box_classes='horizontal-box box-1'}}
+    {{> player_market_stand box_classes='horizontal-box box-5'}}
+    {{> player_market_stand box_classes='vertical-box box-2'}}
+    {{> player_market_stand box_classes='vertical-box box-6'}}
+    {{> player_market_stand box_classes='horizontal-box box-3'}}
+    {{> player_market_stand box_classes='horizontal-box box-7'}}
+    {{> player_market_stand box_classes='vertical-box vertical-left box-4'}}
+    {{> player_market_stand box_classes='vertical-box vertical-left box-8'}}
+
+    <div class='trade-spot spot-1' data-spot-id='1'></div>
+    <div class='trade-spot spot-2' data-spot-id='2'></div>
+    <div class='trade-spot spot-3' data-spot-id='3'></div>
+    <div class='trade-spot spot-4' data-spot-id='4'></div>
+    <div class='trade-spot spot-5' data-spot-id='5'></div>
+    <div class='trade-spot spot-6' data-spot-id='6'></div>
+    <div class='trade-spot spot-7' data-spot-id='7'></div>
+    <div class='trade-spot spot-8' data-spot-id='8'></div>
   </div>
   <div class="sidebar">
     <img src='images/gameboard/sidebar.png' class="layout">
@@ -192,6 +81,7 @@
           </select>
         </div>
       </div>
+      <button class='abs worker-done'>Done</button>
     </div>
     <div class="section home-inventory">
       <div class='title'>Resources:</div>
@@ -263,6 +153,7 @@
 <script type="text/javascript">
 var socket = io.connect("{{root_url}}");
 var player_id = localStorage.getItem("playerID");
+var needs_initialization = true;
 
 socket.on('connect', function(data) {
   socket.emit('get-match-data', player_id);
@@ -273,20 +164,36 @@ socket.on('match-data', function(data) {
   review = data;
 
   // DEBUG
-  data.player = data.game.players[3];
+  player_id = data.game.players[3].uniq_id;
 
-  init_sidebar(data.player);
   players = data.game.players;
 
   for (var i=0; i < players.length; i++) {
     set_players(i+1, players[i]);
+    if (players[i].uniq_id == player_id) {
+      if (needs_initialization) {
+        init_sidebar(players[i]);
+      }
+      update_sidebar(players[i]);
+    }
   }
+});
+
+$('.worker-done').click(function() {
+  var farming = [
+    $('#worker1 option:selected').val(),
+    $('#worker2 option:selected').val(),
+    $('#worker3 option:selected').val(),
+    $('#worker4 option:selected').val()
+  ];
+  socket.emit('player-ready', player_id, {"farming": farming});
 });
 
 function set_players(pos, player) {
   var base_box = $('.box-'+pos);
   base_box.find('.player .player-name').html(player.name);
   base_box.find('.player .player-image').html(player.image);
+  base_box.find('.player .player-image-marker').html(player.image);
 
   base_box.find('.trade-inventory .resource img').remove();
   inventory = player.market_inventory;
@@ -300,7 +207,7 @@ function init_sidebar(player) {
   $('.sidebar .header-info .player-image').html(player.image);
   $('.sidebar .worker-info .title').html(player.character.name+"s:");
   $(".sidebar .worker-info .worker option[value='"+player.character.resource+"']").html(player.character.resource+" x2");
-  update_sidebar(player);
+  needs_initialization = false;
 }
 
 function update_sidebar(player) {

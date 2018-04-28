@@ -30,10 +30,14 @@
   background: green;
 }
 
-.player .player-image {
+.player .player-image, .player .player-image-marker {
   position: absolute;
   top: 0px;
   left: 0px;
+}
+
+.player-image-marker {
+  opacity: .5;
 }
 
 .player .player-name {
@@ -169,4 +173,55 @@
 .vertical-left .resource:nth-child(2n+1) {
   left: 47px;
 }
+
+.trade-spot {
+  width: 38px;
+  height: 20px;
+  border: thin solid rgb(100, 80, 40);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: inset 2px 2px 4px rgb(100,80,40);
+}
+
+.trade-spot.spot-1 {
+  left: 315px;
+  top: 260px;
+}
+
+.trade-spot.spot-2 {
+  left: 367px;
+  top: 260px;
+}
+
+.trade-spot.spot-3 {
+  left: 420px;
+  top: 320px;
+}
+
+.trade-spot.spot-4 {
+  left: 420px;
+  top: 355px;
+}
+
+.trade-spot.spot-5 {
+  left: 367px;
+  top: 400px;
+}
+
+.trade-spot.spot-6 {
+  left: 315px;
+  top: 400px;
+}
+
+.trade-spot.spot-7 {
+  left: 262px;
+  top: 355px;
+}
+.trade-spot.spot-8 {
+  left: 262px;
+  top: 320px;
+}
+
+
+
 

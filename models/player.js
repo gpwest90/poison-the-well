@@ -6,9 +6,12 @@ class Player {
     this.uniq_id = Player.makeId();
     character.is_selected = true;
     this.character = character;
+    this.is_ready = false;
     this.extra_lives = 3;
     this.food_goal = [];
     this.victory_goal = [];
+    this.data_cache = null;
+    this.farming = [];
     this.home_inventory = [
       new Resource(character.resource),
       new Resource(character.resource),
@@ -31,6 +34,27 @@ class Player {
     ];
 
     this.image = "<img src='images/characters/"+character.name+".png'>";
+  }
+
+  farmResources() {
+    for (var i = 0; i < this.farming.length; i++) {
+      if (i > this.extra_lives) {
+        return
+      }
+
+      var new_resource = this.farming[i];
+      this.home_inventory.push(new Resource(new_resource));
+      // If this is the specialized reousrce, add a second one
+      if (new_resource == this.character.resource) {
+        this.home_inventory.push(new Resource(new_resource));
+      }
+    }
+  }
+
+  handleData(data) {
+    if (data.farming) {
+      this.farming = data.farming;
+    }
   }
 
   setGoals(resources) {

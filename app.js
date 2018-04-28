@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3005
 const path = require('path')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
@@ -48,10 +48,13 @@ io.on('connection', function(client) {
   });
 
   client.on('get-match-data', function(player_id) {
-    client.emit('match-data', {
-      game: game, 
-      player: game.getPlayerById(player_id)
-    });
+    client.emit('match-data', { game: game });
+  });
+
+  client.on('player-ready', function(player_id, data) {
+    game.markPlayerReady(player_id, data);
+    game.checkNextPhase();
+    io.sockets.emit('match-data', { game: game });
   });
 });
 
@@ -101,24 +104,26 @@ app.post('/player', (req, res) => {
   } else {
     io.sockets.emit('new-player',{player: player});
     res.render('players/new', {
-      player: player
+      player: player,
+      root_url: 'localhost:'+port
     })
   }
 })
 
 app.get('/players', (req, res) => {
   res.render('players/index', {
-    players: game.players
+    players: game.players,
+    root_url: 'localhost:'+port
   })
 })
 
 // Game
 
 app.get('/game', (req, res) => {
-  debugger
   if (game.has_started == false) {
     res.render('games/show', {
-      game: game
+      game: game,
+      root_url: 'localhost:'+port
     });
   } else {
     res.redirect('/?errors=' + "No game has started yet");

@@ -100,6 +100,11 @@
   right: 0px;
 }
 
+.worker-info .worker-done {
+  top: 80px;
+  right: 8px;
+}
+
 .strikes .dead {
   right: 8px;
   top: -16px;
