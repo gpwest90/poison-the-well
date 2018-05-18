@@ -6,7 +6,7 @@ class Resource {
     this.uniq_id = resource_id++;
     this.name = name;
     this.is_poisoned = false;
-    this.image =  "<img src='images/resources/"+name+".png'>";
+    this.image =  "<img data-resource-id='"+this.uniq_id+"'src='images/resources/"+name+".png'>";
   }
 
 }

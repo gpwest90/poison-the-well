@@ -180,6 +180,16 @@
   
 }
 
+.their-trade .player-image {
+  left: -90px;
+  top: -16px;
+}
+
+.their-trade .player-name {
+  left: -90px;
+  top: -30px;
+}
+
 
 
 /* Shared inventory */

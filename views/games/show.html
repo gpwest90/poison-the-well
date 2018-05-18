@@ -10,14 +10,17 @@
     {{> player_market_stand box_classes='vertical-box vertical-left box-4'}}
     {{> player_market_stand box_classes='vertical-box vertical-left box-8'}}
 
-    <div class='trade-spot spot-1' data-spot-id='1'></div>
-    <div class='trade-spot spot-2' data-spot-id='2'></div>
-    <div class='trade-spot spot-3' data-spot-id='3'></div>
-    <div class='trade-spot spot-4' data-spot-id='4'></div>
-    <div class='trade-spot spot-5' data-spot-id='5'></div>
-    <div class='trade-spot spot-6' data-spot-id='6'></div>
-    <div class='trade-spot spot-7' data-spot-id='7'></div>
-    <div class='trade-spot spot-8' data-spot-id='8'></div>
+    <div class='trading-spots'>
+      <div class='trade-spot' data-spot-id='0'></div>
+      <div class='trade-spot' data-spot-id='1'></div>
+      <div class='trade-spot' data-spot-id='2'></div>
+      <div class='trade-spot' data-spot-id='3'></div>
+      <div class='trade-spot' data-spot-id='4'></div>
+      <div class='trade-spot' data-spot-id='5'></div>
+      <div class='trade-spot' data-spot-id='6'></div>
+      <div class='trade-spot' data-spot-id='7'></div>
+    </div>
+    <img src='images/misc/cat-thryn.png' class="layout cat">
   </div>
   <div class="sidebar">
     <img src='images/gameboard/sidebar.png' class="layout">
@@ -164,10 +167,13 @@ socket.on('match-data', function(data) {
   review = data;
 
   // DEBUG
-  player_id = data.game.players[3].uniq_id;
+  if (needs_initialization) {
+    player_id = data.game.players[Math.floor(Math.random() * data.game.players.length)].uniq_id;
+  }
 
   players = data.game.players;
 
+  $('.gameboard .trading-spots .trade-spot').html('');
   for (var i=0; i < players.length; i++) {
     set_players(i+1, players[i]);
     if (players[i].uniq_id == player_id) {
@@ -175,6 +181,7 @@ socket.on('match-data', function(data) {
         init_sidebar(players[i]);
       }
       update_sidebar(players[i]);
+      update_sidebar_trade(players[i], data.game.trading_post)
     }
   }
 });
@@ -189,16 +196,49 @@ $('.worker-done').click(function() {
   socket.emit('player-ready', player_id, {"farming": farming});
 });
 
+var testest = null;
+$('.home-inventory .resource, .market-inventory .resource').click(function(obj) {
+  testest = obj;
+  resource_element = $(obj.currentTarget).find('img')
+  if (resource_element) {
+    resource_id = resource_element.data('resource-id');
+    if (resource_id) {
+      socket.emit('resource-selected', player_id, {"resource_id": resource_id});
+    }
+  }
+})
+
+$('.trade-spot').click(function(obj) {
+  testest = obj;
+  spot_id = $(obj.currentTarget).data('spot-id');
+  if (spot_id != null) {
+    socket.emit('trade-spot-selected', player_id, {"trade_spot_id": spot_id});
+  }
+});
+
+$('.cat').click(function() {
+  alert("Cat-thryn says 'Meow!'");
+})
+
 function set_players(pos, player) {
   var base_box = $('.box-'+pos);
   base_box.find('.player .player-name').html(player.name);
-  base_box.find('.player .player-image').html(player.image);
+  if (player.trade_post_id == null) {
+    base_box.find('.player .player-image').html(player.image);
+  } else {
+    base_box.find('.player .player-image').html('');
+    $('.gameboard .trading-spots .trade-spot').eq(player.trade_post_id).html(player.image);
+  }
   base_box.find('.player .player-image-marker').html(player.image);
 
   base_box.find('.trade-inventory .resource img').remove();
   inventory = player.market_inventory;
   for (var i = 0; i < inventory.length; i++ ) {
-    base_box.find('.trade-inventory .resource').eq(i).html(inventory[i].image);
+    if (inventory[i] != null) {
+      base_box.find('.trade-inventory .resource').eq(i).html(inventory[i].image);
+    } else {
+      base_box.find('.trade-inventory .resource').eq(i).html('');
+    }
   }
 }
 
@@ -233,16 +273,57 @@ function update_sidebar(player) {
   // Set home inventory
   home_inventory = player.home_inventory
   for (var i = 0; i < home_inventory.length; i++ ) {
-    $('.sidebar .home-inventory .resource').eq(i).html(home_inventory[i].image);
+    if (home_inventory[i] != null) {
+      $('.sidebar .home-inventory .resource').eq(i).html(home_inventory[i].image);
+    } else {
+      $('.sidebar .home-inventory .resource').eq(i).html('');
+    }
   }
   // Set market inventory
   market_inventory = player.market_inventory
   for (var i = 0; i < market_inventory.length; i++ ) {
-    $('.sidebar .market-inventory .resource').eq(i).html(market_inventory[i].image);
+    if (market_inventory[i] != null) {
+      $('.sidebar .market-inventory .resource').eq(i).html(market_inventory[i].image);
+    } else {
+      $('.sidebar .market-inventory .resource').eq(i).html('');
+    }
+  }
+}
+
+function update_sidebar_trade(player, traders) {
+  // Set trade inventory
+  trade_inventory = player.trade_inventory
+  for (var i = 0; i < trade_inventory.length; i++ ) {
+    if (trade_inventory[i] != null) {
+      $('.sidebar .tradebox .my-trade .resource').eq(i).html(trade_inventory[i].image);
+    } else {
+      $('.sidebar .tradebox .my-trade .resource').eq(i).html('');
+    }
   }
 
-  // Set trade inventory
+  // Set traders inventory
+  // check if trading
+  var post_id = player.trade_post_id
+  $('.sidebar .tradebox .their-trade .resource').html('');
+  $('.sidebar .tradebox .their-trade .player-name').html('');
+  $('.sidebar .tradebox .their-trade .player-image').html('');
+  if (post_id != null) {
+    other_post_id = (post_id % 2 == 0) ? post_id + 1 : post_id - 1
+    other_trader = traders[other_post_id]
+    if (other_trader != null) {
 
+      $('.sidebar .tradebox .their-trade .player-name').html(other_trader.name + " the " + other_trader.character.name);
+      $('.sidebar .tradebox .their-trade .player-image').html(other_trader.image);
+
+      traders_inventory = other_trader.trade_inventory
+      $('.sidebar .tradebox .their-trade .resource').html('');
+      for (var i = 0; i < traders_inventory.length; i++ ) {
+        if (traders_inventory[i] != null) {
+          $('.sidebar .tradebox .their-trade .resource').eq(i).html(traders_inventory[i].image);
+        }
+      }
+    }
+  }
 }
 
 function resource_image(resource) {

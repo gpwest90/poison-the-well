@@ -4,6 +4,11 @@
   left: 0px;
 }
 
+.resource.poisoned::before {
+  content: url('/images/resources/infected.gif');
+  position: absolute;
+}
+
 .board {
   z-index: 0;
 }
@@ -147,11 +152,11 @@
 }
 
 .vertical-box .resource:nth-child(2n) {
-  left: 37px;
+  left: 66px;
 }
 
 .vertical-box .resource:nth-child(2n+1) {
-  left: 66px;
+  left: 37px;
 }
 
 .vertical-box .resource:nth-child(n+3) {
@@ -167,11 +172,11 @@
 }
 
 .vertical-left .resource:nth-child(2n) {
-  left: 18px;
+  left: 47px;
 }
 
 .vertical-left .resource:nth-child(2n+1) {
-  left: 47px;
+  left: 18px;
 }
 
 .trade-spot {
@@ -183,45 +188,56 @@
   box-shadow: inset 2px 2px 4px rgb(100,80,40);
 }
 
-.trade-spot.spot-1 {
+.trade-spot img {
+  position: absolute;
+  bottom: 0px;
+  left: 3px;
+  z-index: 10px;
+}
+
+.trade-spot:nth-child(1) {
   left: 315px;
   top: 260px;
 }
 
-.trade-spot.spot-2 {
+.trade-spot:nth-child(2) {
   left: 367px;
   top: 260px;
 }
 
-.trade-spot.spot-3 {
+.trade-spot:nth-child(3) {
   left: 420px;
   top: 320px;
 }
 
-.trade-spot.spot-4 {
+.trade-spot:nth-child(4) {
   left: 420px;
   top: 355px;
 }
 
-.trade-spot.spot-5 {
+.trade-spot:nth-child(5) {
   left: 367px;
   top: 400px;
 }
 
-.trade-spot.spot-6 {
+.trade-spot:nth-child(6) {
   left: 315px;
   top: 400px;
 }
 
-.trade-spot.spot-7 {
+.trade-spot:nth-child(8) {
   left: 262px;
   top: 355px;
 }
-.trade-spot.spot-8 {
+.trade-spot:nth-child(7) {
   left: 262px;
   top: 320px;
 }
 
-
+.cat {
+  position: absolute;
+  bottom: 11px;
+  left: 57px;
+}
 
 

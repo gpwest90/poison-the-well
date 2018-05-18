@@ -16,6 +16,7 @@ class Player {
       new Resource(character.resource),
       new Resource(character.resource),
       new Resource(character.resource),
+      null,
       new Resource(character.resource),
       new Resource(character.resource),
       new Resource(character.resource),
@@ -24,14 +25,21 @@ class Player {
     ]
     this.market_inventory = [
       new Resource(character.resource),
-      new Resource(character.resource),
-      new Resource(character.resource),
-      new Resource(character.resource),
+      null,
+      null,
+      null,
       new Resource(character.resource),
       new Resource(character.resource),
       new Resource(character.resource),
       new Resource(character.resource)
     ];
+
+    this.trade_post_id = null;
+    this.trade_inventory = [
+      new Resource(character.resource),
+      null,
+      new Resource(character.resource)
+    ]
 
     this.image = "<img src='images/characters/"+character.name+".png'>";
   }
@@ -43,11 +51,28 @@ class Player {
       }
 
       var new_resource = this.farming[i];
-      this.home_inventory.push(new Resource(new_resource));
+      addToFirstBlank(this.home_inventory, new Resource(new_resource))
       // If this is the specialized reousrce, add a second one
       if (new_resource == this.character.resource) {
-        this.home_inventory.push(new Resource(new_resource));
+        addToFirstBlank(this.home_inventory, new Resource(new_resource))
       }
+    }
+  }
+
+  marketResource(resource_id) {
+    // If resource is at home, send to market
+    var pos = positionWithId(this.home_inventory, resource_id)
+    if (pos != -1) {
+      addToFirstBlank(this.market_inventory, this.home_inventory[pos])
+      this.home_inventory[pos] = null;
+    } 
+    // if resource is at market, send home
+    else {
+      var pos = positionWithId(this.market_inventory, resource_id)
+      if (pos != -1) {
+        addToFirstBlank(this.home_inventory, this.market_inventory[pos])
+        this.market_inventory[pos] = null;
+      } 
     }
   }
 
@@ -84,6 +109,28 @@ class Player {
     return text;
   }
 
+}
+
+var positionWithId = function(array, uniq_id) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] != null && array[i].uniq_id == uniq_id) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+var firstBlankPosition = function(array) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] == null) {
+      return i;
+    }
+  }
+  return array.length;
+}
+
+var addToFirstBlank = function(array, obj) {
+  array[firstBlankPosition(array)] = obj;
 }
 
 module.exports = Player;

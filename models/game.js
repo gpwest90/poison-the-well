@@ -9,24 +9,48 @@ class Game {
     this.player_count = 0;
     this.players = [];
     this.resources = [];
+    // 8 posts for trading
+    this.trading_post = [null,null,null,null,null,null,null,null];
     this.has_started = false;
     this.phase = 0;
   }
 
-  prepNewRound() {
-    for (var i = 0; i < this.players.length; i++) {
-      this.players[i].setGoals(this.resources);
+  markPlayerReady(player_id, data) {
+    var player = this.getPlayerById(player_id);
+    if (player != null) {
+      player.is_ready = true;
+      player.handleData(data);
+      // TODO is this the best way to handle data?
     }
   }
 
-  markPlayerReady(player_id, data) {
+  playerSelectedResource(player_id, data) {
     var player = this.getPlayerById(player_id);
-    if (player == null) {
-      player.handleData('false');
-      return
+    if (player != null) {
+      if (this.phase == 1) {
+        player.marketResource(data.resource_id)
+      }
     }
-    player.is_ready = true;
-    player.handleData(data);
+  }
+
+  playerSelectedTradeSpot(player_id, data) {
+    var player = this.getPlayerById(player_id);
+    var spot_id = data.trade_spot_id;
+    if (this.phase == 2 && player != null && spot_id != null) {
+      if (this.trading_post[spot_id] == null) {
+        // Add player to trading post
+        this.trading_post[spot_id] = player
+
+        // Remove player from old post, if they were at one
+        var old_post = player.trade_post_id;
+        if (old_post != null) {
+          this.trading_post[old_post] = null
+        }
+
+        // Update player's post reference
+        player.trade_post_id = spot_id;
+      }
+    }
   }
 
   checkNextPhase() {
@@ -35,6 +59,7 @@ class Game {
       if (this.phase == 0) {
         for (var i = 0; i < this.players.length; i++){
           this.players[i].farmResources();
+          this.players[i].setGoals(this.resources);
         }
         this.phase = 1;
       } else if (this.phase == 1) {

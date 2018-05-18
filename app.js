@@ -18,7 +18,6 @@ game.connectNewPlayer("Evan", 2);
 game.connectNewPlayer("Sam", 3);
 game.connectNewPlayer("John", 4);
 game.connectNewPlayer("Elliot", 5);
-game.prepNewRound();
 //----
 
 app.use(bodyParser.urlencoded({
@@ -54,6 +53,17 @@ io.on('connection', function(client) {
   client.on('player-ready', function(player_id, data) {
     game.markPlayerReady(player_id, data);
     game.checkNextPhase();
+    io.sockets.emit('match-data', { game: game });
+  });
+
+  client.on('resource-selected', function(player_id, data) {
+    game.playerSelectedResource(player_id, data);
+    client.emit('match-data', { game: game });
+  });
+
+  client.on('trade-spot-selected', function(player_id, data) {
+    game.playerSelectedTradeSpot(player_id, data);
+    // TODO Only emit if change was made
     io.sockets.emit('match-data', { game: game });
   });
 });
