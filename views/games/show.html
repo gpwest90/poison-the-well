@@ -1,4 +1,19 @@
 <div class="game">
+  <div class='scroll-winner'></div>
+  <div class="text-scroll">
+    <img src='images/gameboard/text_scroll.png'>
+    <div class='scroll-message'>
+      <p class='text-header'>The King is at war!</p>
+      <p class='text-body'>
+        And he needs our help. It is our duty, as a group, to produce and send <b> {{vp_needed}} </b> 
+        shipments of resources to win the war and bring our army home. But we should hurry.
+        Rumor has it a <i>necromancer</i> is amongst us and plots to kill us all.
+        <br><br>
+        Careful who you trade with and try to bring our king home!
+      </p>
+    </div>
+    <button class='scroll-accept'>OK</button>
+  </div>
   <div class="gameboard">
     <img src='images/gameboard/courtyard.png' class="board">
     {{> player_market_stand box_classes='horizontal-box box-1'}}
@@ -24,10 +39,13 @@
   </div>
   <div class="sidebar">
     <img src='images/gameboard/sidebar.png' class="layout">
-    <div class="section header-info">
+    <div class='game-state'>
+      <span class='time'>Morning</span> of Day <span class='day'>1</span>
+    </div>
+    <div class="section section0 header-info">
       <div class='player-name'></div>
       <div class='player-image'></div>
-      <div class="food-requirement">
+      <div class="food-requirement purchase-option">
         <div class='label'>Food:</div>
         <div class='resource-list'>
           <div class='resource'></div>
@@ -36,7 +54,7 @@
           <div class='resource'></div>
         </div>
       </div>
-      <div class="victory-point-requirement">
+      <div class="victory-point-requirement purchase-option">
         <div class='label'>Victory Point:</div>
         <div class='resource-list'>
           <div class='resource'></div>
@@ -46,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div class="section worker-info">
+    <div class="section section1 worker-info">
       <div class='title'></div>
       <div class='strikes'>
         <div class='dead'></div>
@@ -84,9 +102,11 @@
           </select>
         </div>
       </div>
+      <button class='abs all-worker-done'>EVERYONE IS Done</button>
       <button class='abs worker-done'>Done</button>
+
     </div>
-    <div class="section home-inventory">
+    <div class="section section2 home-inventory">
       <div class='title'>Resources:</div>
       <div class='resource-long-list'>
         <div class='resource'></div>
@@ -107,7 +127,7 @@
         <div class='resource'></div>
       </div>
     </div>
-    <div class="section market-inventory">
+    <div class="section section3 market-inventory">
       <div class='title'>Resources at market:</div>
       <div class='resource-list'>
         <div class='resource'></div>
@@ -120,7 +140,7 @@
         <div class='resource'></div>
       </div>
     </div>
-    <div class="section tradebox">
+    <div class="section section4 tradebox">
       <div class='title'>Trading:</div>
       <div class="my-trade">
         <div class='resource-list'>
@@ -133,6 +153,12 @@
           <div class='resource'></div>
           <div class='resource'></div>
         </div>
+      </div>
+      <div class='trade-agreement'>
+        <div class='my-status'>Not Ready</div>
+        <button class='abs trade-ready'>Ready</button>
+        <button class='abs trade-cancel'>Cancel</button>
+        <div class='their-status'>Not Ready</div>
       </div>
 
       <div class="their-trade">
@@ -154,34 +180,63 @@
 </div>
 
 <script type="text/javascript">
+
 var socket = io.connect("{{root_url}}");
 var player_id = localStorage.getItem("playerID");
 var needs_initialization = true;
+
+var review;
+var game_phases = ['Morning','Noon','Afternoon','Evening'];
+var current_game_phase = 0;
+
+var intro_seen = localStorage.getItem("intro_seen");
+var message_data = [];
+
 
 socket.on('connect', function(data) {
   socket.emit('get-match-data', player_id);
 });
 
-var review;
 socket.on('match-data', function(data) {
   review = data;
+
+  if (data.messages != null) {
+    message_data = message_data.concat(data.messages);
+    show_scroll();
+  }
 
   // DEBUG
   if (needs_initialization) {
     player_id = data.game.players[Math.floor(Math.random() * data.game.players.length)].uniq_id;
   }
 
+  current_game_phase = data.game.phase;
+  var current_day = data.game.day;
+  set_game_phase(current_game_phase, current_day);
+
   players = data.game.players;
 
   $('.gameboard .trading-spots .trade-spot').html('');
+
+  var this_player = null;
   for (var i=0; i < players.length; i++) {
     set_players(i+1, players[i]);
     if (players[i].uniq_id == player_id) {
-      if (needs_initialization) {
-        init_sidebar(players[i]);
-      }
-      update_sidebar(players[i]);
-      update_sidebar_trade(players[i], data.game.trading_post)
+      this_player = players[i];
+    }
+  }
+
+  // Update current player specifics:
+  if (this_player != null) {
+    if (needs_initialization) {
+      init_sidebar(this_player, i+1);
+    }
+    update_sidebar(this_player);
+    update_sidebar_trade(this_player, data.game.trading_post)
+    save_local_goals(this_player)
+    // TODO check if necromancer
+    if (true) {
+      showPoisonedResources();
     }
   }
 });
@@ -196,14 +251,69 @@ $('.worker-done').click(function() {
   socket.emit('player-ready', player_id, {"farming": farming});
 });
 
+// DEBUG
+$('.all-worker-done').click(function() {
+  socket.emit('player-ready', player_id, {next_phase: true});
+});
+
+$('.trade-cancel').click(function() {
+  cancel_trade();
+})
+
+var trade_value = false;
+$('.trade-ready').click(function() {
+  update_trade_state(!trade_value);
+});
+
+var selected_poison = null;
+
 var testest = null;
-$('.home-inventory .resource, .market-inventory .resource').click(function(obj) {
+$('.home-inventory .resource, .market-inventory .resource, .my-trade .resource').click(function(obj) {
   testest = obj;
   resource_element = $(obj.currentTarget).find('img')
-  if (resource_element) {
-    resource_id = resource_element.data('resource-id');
+
+  // If poison is selected
+  if (resource_element[0].className.includes("Poison")) {
+    $('.Poison').parent().removeClass('poisoned');
+    if (selected_poison == resource_element.data('resource-id')) {
+      selected_poison = null;
+    } else {
+      selected_poison = resource_element.data('resource-id');
+      resource_element.parent().addClass("poisoned");  
+    }
+    
+    removePurchaseProgress();
+    return null;
+  } else if (selected_poison != null) {
+    var resource_id = resource_element.data('resource-id');
     if (resource_id) {
-      socket.emit('resource-selected', player_id, {"resource_id": resource_id});
+      socket.emit('resource-poisoned', player_id, {"resource_id": resource_id, "poison_id": selected_poison});
+    }
+    $('.Poison').parent().removeClass('poisoned');
+    selected_poison = null;
+    removePurchaseProgress();
+    return null;
+  }
+
+  // If in payment phase
+  if (current_game_phase == 3) {
+    var resource_type = resource_element.data('resource-type');
+    var attempted_resource_id = resource_element.data('resource-id');
+
+    // Verify this resource hasnt already been selected to be used as payment
+    if (!local_resource_ids.includes(attempted_resource_id)) {
+      local_resource_ids[local_resource_ids.length] = attempted_resource_id
+      local_payment[local_payment.length] = resource_type;
+      compare_local_payment();
+    }
+    
+  // else moving between inventories
+  } else {
+    if (resource_element) {
+      var resource_id = resource_element.data('resource-id');
+      if (resource_id) {
+        socket.emit('resource-selected', player_id, {"resource_id": resource_id});
+      }
     }
   }
 })
@@ -216,51 +326,122 @@ $('.trade-spot').click(function(obj) {
   }
 });
 
+
+
+$(".scroll-accept").click(function() {
+  hide_scroll();
+});
+
+function hide_scroll() {
+  localStorage.setItem("intro_seen", true);
+  if (message_data.length == 0) {
+    $(".text-scroll").hide();
+  } else {
+    show_scroll();
+  }
+}
+
+function show_scroll() {
+  next_message = message_data.shift();
+  if (next_message) {
+    if (next_message.victory) {
+      if (next_message.victory == "necromancer") {
+        $(".scroll-winner").html("<img src='images/gameboard/necromancer.png'>");
+      } else {
+        $(".scroll-winner").html("<img src='images/gameboard/king.png'>");
+      }
+      $(".scroll-winner").show();
+    } 
+    $(".text-scroll .text-header").html(next_message.title);
+    $(".text-scroll .text-body").html(next_message.body);
+    $(".text-scroll").show();
+  }
+}
+
+if (intro_seen) {
+  hide_scroll();
+}
+
 $('.cat').click(function() {
   alert("Cat-thryn says 'Meow!'");
 })
 
+function cancel_trade() {
+  socket.emit('trade-cancelled', player_id);
+}
+
+function update_trade_state(value) {
+  socket.emit('trade-ready', player_id, {'trade_ready': value});
+}
+
 function set_players(pos, player) {
   var base_box = $('.box-'+pos);
+
+  // TODO only need to set these once
   base_box.find('.player .player-name').html(player.name);
-  if (player.trade_post_id == null) {
-    base_box.find('.player .player-image').html(player.image);
-  } else {
-    base_box.find('.player .player-image').html('');
-    $('.gameboard .trading-spots .trade-spot').eq(player.trade_post_id).html(player.image);
-  }
   base_box.find('.player .player-image-marker').html(player.image);
 
+  base_box.find('.player .player-image').html('');
   base_box.find('.trade-inventory .resource img').remove();
-  inventory = player.market_inventory;
-  for (var i = 0; i < inventory.length; i++ ) {
-    if (inventory[i] != null) {
-      base_box.find('.trade-inventory .resource').eq(i).html(inventory[i].image);
+
+  if (is_player_visible_at_market(player)) {
+
+    if (player.trade_post_id == null) {
+      base_box.find('.player .player-image').html(player.image);
     } else {
-      base_box.find('.trade-inventory .resource').eq(i).html('');
+      $('.gameboard .trading-spots .trade-spot').eq(player.trade_post_id).html(player.image);
+    }
+
+    
+    inventory = player.market_inventory;
+    for (var i = 0; i < inventory.length; i++ ) {
+      if (inventory[i] != null) {
+        base_box.find('.trade-inventory .resource').eq(i).html(inventory[i].image);
+      } else {
+        base_box.find('.trade-inventory .resource').eq(i).html('');
+      }
     }
   }
 }
 
-function init_sidebar(player) {
+function is_player_visible_at_market(player) {
+  if (current_game_phase == 1 && player.is_ready) {
+    return true;
+  } else if (current_game_phase == 2 && !player.is_ready) {
+    return true;
+  }
+  return false;
+}
+
+function init_sidebar(player, pos) {
   $('.sidebar .header-info .player-name').html(player.name);
   $('.sidebar .header-info .player-image').html(player.image);
   $('.sidebar .worker-info .title').html(player.character.name+"s:");
   $(".sidebar .worker-info .worker option[value='"+player.character.resource+"']").html(player.character.resource+" x2");
+  $('.box-'+pos+' .player .player-image-marker').click(function() {
+    cancel_trade();
+  });
   needs_initialization = false;
 }
-
+var testestest = null;
 function update_sidebar(player) {
   // Set goals
+  testestest = player;
   food_goal = player.food_goal
-  for (var i = 0; i < food_goal.length; i++ ) {
-    var img = resource_image(food_goal[i]);
-    $('.sidebar .header-info .food-requirement .resource').eq(i).html(img);
+  if (food_goal.join() != local_food.join()) {
+    $('.sidebar .header-info .food-requirement .resource').empty();
+    for (var i = 0; i < food_goal.length; i++ ) {
+      var img = resource_image(food_goal[i]);
+      $('.sidebar .header-info .food-requirement .resource').eq(i).html(img);
+    }
   }
   victory_goal = player.victory_goal
-  for (var i = 0; i < victory_goal.length; i++ ) {
-    var img = resource_image(victory_goal[i]);
-    $('.sidebar .header-info .victory-point-requirement .resource').eq(i).html(img);
+  if (victory_goal.join() != local_victory.join()) {
+    $('.sidebar .header-info .victory-point-requirement .resource').empty();
+    for (var i = 0; i < victory_goal.length; i++ ) {
+      var img = resource_image(victory_goal[i]);
+      $('.sidebar .header-info .victory-point-requirement .resource').eq(i).html(img);
+    }
   }
 
   // Set worker lives
@@ -307,6 +488,9 @@ function update_sidebar_trade(player, traders) {
   $('.sidebar .tradebox .their-trade .resource').html('');
   $('.sidebar .tradebox .their-trade .player-name').html('');
   $('.sidebar .tradebox .their-trade .player-image').html('');
+  trade_value = player.trade_ready;
+  $('.sidebar .tradebox .trade-agreement .my-status').html(trade_value ? "Ready" : "Not Ready");
+  $('.sidebar .tradebox .trade-agreement .trade-ready').html(!trade_value ? "Ready" : "Not Ready");
   if (post_id != null) {
     other_post_id = (post_id % 2 == 0) ? post_id + 1 : post_id - 1
     other_trader = traders[other_post_id]
@@ -317,6 +501,7 @@ function update_sidebar_trade(player, traders) {
 
       traders_inventory = other_trader.trade_inventory
       $('.sidebar .tradebox .their-trade .resource').html('');
+      $('.sidebar .tradebox .trade-agreement .their-status').html(other_trader.trade_ready ? "Ready" : "Not Ready");
       for (var i = 0; i < traders_inventory.length; i++ ) {
         if (traders_inventory[i] != null) {
           $('.sidebar .tradebox .their-trade .resource').eq(i).html(traders_inventory[i].image);
@@ -328,6 +513,106 @@ function update_sidebar_trade(player, traders) {
 
 function resource_image(resource) {
   return "<img src='images/resources/"+resource+".png'>"
+}
+
+function showPoisonedResources() {
+  $(".resource").removeClass('poisoned');
+  $(".resource .is-poisoned").parent().addClass('poisoned');
+}
+
+
+var local_food = [];
+var local_victory = [];
+var local_poison = [];
+var local_zombie = [];
+
+var local_payment = [];
+var local_resource_ids = [];
+
+function save_local_goals(player) {
+  local_food = player.food_goal;
+  local_victory = player.victory_goal;
+  local_poison = player.poison_goal;
+  local_zombie = player.zombie_goal;
+}
+
+function compare_local_payment() {
+  var purchase_status = -1;
+  var payment_string = local_payment.join('');
+
+  var food_string = local_food.join('');
+  if (food_string.indexOf(payment_string) == 0) {
+    purchase_status = 0;
+    $(".section.header-info .food-requirement").addClass("active");
+    if (food_string == payment_string) {
+      purchase_status = -1;
+      purchase_selected_item("food", local_resource_ids);
+    }
+  }
+
+  if (purchase_status != 1) {
+    var victory_string = local_victory.join('');
+    if (victory_string.indexOf(payment_string) == 0) {
+      purchase_status = 0;
+      $(".section.header-info .victory-point-requirement").addClass("active");
+      if (victory_string == payment_string) {
+        purchase_status = -1;
+        purchase_selected_item("victory-point", local_resource_ids);
+      }
+    }
+  }
+
+  if (purchase_status != 1) {
+    var poison_string = local_poison.join('');
+    if (poison_string.indexOf(payment_string) == 0) {
+      purchase_status = 0;
+      if (poison_string == payment_string) {
+        purchase_status = -1;
+        purchase_selected_item("poison", local_resource_ids);
+      }
+    }
+  }
+
+  if (purchase_status == -1) {
+    removePurchaseProgress();
+  }
+  else {
+    for(i=0; i < local_resource_ids.length; ++i) {
+      $(".home-inventory .resource .resource-"+local_resource_ids[i]).addClass('selected');
+    }
+  }
+}
+
+function removePurchaseProgress() {
+  local_payment = [];
+  local_resource_ids = [];
+  $(".section.header-info .purchase-option").removeClass("active");
+  $(".section.home-inventory .resource img").removeClass("selected");
+}
+
+function purchase_selected_item(item_name, resource_array) {
+  socket.emit('player-purchase', player_id, {"item": item_name, resources: resource_array});
+}
+
+function set_game_phase(phase, day) {
+  // Update the time of day
+  $('.sidebar .game-state .time').html(game_phases[phase]);
+  $('.sidebar .game-state .day').html(day);
+
+  // Highlight the active sidebar sections
+  $(".sidebar .section").removeClass("active");
+  $(".sidebar .section0").addClass("active");
+  if (phase == 0) {
+    $(".sidebar .section1").addClass("active");
+  } else if (phase == 1) {
+    $(".sidebar .section2").addClass("active");
+    $(".sidebar .section3").addClass("active");
+  } else if (phase == 2) {
+    $(".sidebar .section3").addClass("active");
+    $(".sidebar .section4").addClass("active");
+  } else if (phase == 3) {
+    $(".sidebar .section2").addClass("active");
+  } 
 }
 
 </script>

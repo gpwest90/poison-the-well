@@ -2,6 +2,7 @@ const Player = require('./player');
 const Character = require('./character');
 
 var characters = Character.createCharacters();
+var global_game = null;
 
 class Game {
   
@@ -13,11 +14,22 @@ class Game {
     this.trading_post = [null,null,null,null,null,null,null,null];
     this.has_started = false;
     this.phase = 0;
+    this.day = 1;
+    this.vp_goal = 16;
+    this.current_vp = 0;
+    global_game = this;
+  }
+
+  startGame() {
+    this.player_count = this.players.length;
+    this.vp_goal = this.player_count * 3;
+    this.players[Math.floor(Math.random()*this.players.length)].is_necromancer = true;
   }
 
   markPlayerReady(player_id, data) {
     var player = this.getPlayerById(player_id);
     if (player != null) {
+      this.playerCancelledTrade(player_id);
       player.is_ready = true;
       player.handleData(data);
       // TODO is this the best way to handle data?
@@ -29,7 +41,16 @@ class Game {
     if (player != null) {
       if (this.phase == 1) {
         player.marketResource(data.resource_id)
+      } else if (this.phase == 2) {
+        player.tradeResource(data.resource_id)
       }
+    }
+  }
+
+  playerPoisonedResource(player_id, data) {
+    var player = this.getPlayerById(player_id);
+    if (player != null) {
+      player.poisonResource(data.resource_id, data.poison_id);
     }
   }
 
@@ -49,33 +70,109 @@ class Game {
 
         // Update player's post reference
         player.trade_post_id = spot_id;
+        player.trade_ready = false;
+        this.tradePostStateChanged(old_post);
+        this.tradePostStateChanged(spot_id);
       }
     }
   }
 
-  checkNextPhase() {
-    if (this.allPlayersReady()) {
+  playerCancelledTrade(player_id) {
+    var player = this.getPlayerById(player_id);
+    if (this.phase == 2 && player != null) {
+      var old_post = player.trade_post_id;
+      // Remove player from trading post
+      this.trading_post[old_post] = null;
+      // Update player's post reference
+      player.trade_post_id = null;
+      player.trade_ready = false;
+      this.tradePostStateChanged(old_post);
+    }
+  }
+
+  tradePostStateChanged(post_id) {
+    if (post_id != null) {
+      var other_post_id = (post_id % 2 == 0) ? post_id + 1 : post_id - 1;
+      var other_player = this.trading_post[other_post_id];
+      if (other_player != null) {
+        other_player.trade_ready = false;
+      }
+    }
+  }
+
+  playerReadyToTrade(player_id, data) {
+    var player = this.getPlayerById(player_id);
+    var trade_state = data.trade_ready
+    if (this.phase == 2 && player != null) {
+      player.trade_ready = trade_state;
+      // TODO: resolve trade if both ready
+      if (player.trade_ready) {
+        var post_id = player.trade_post_id;
+        var other_post_id = (post_id % 2 == 0) ? post_id + 1 : post_id - 1;
+        var other_player = this.trading_post[other_post_id]
+        if (other_player != null && other_player.trade_ready) {
+          var trade_storage = player.trade_inventory;
+          player.trade_inventory = other_player.trade_inventory;
+          other_player.trade_inventory = trade_storage;
+
+          player.trade_ready = false;
+          other_player.trade_ready = false;
+        }
+      }
+    }
+  }
+
+  playerPurchaseItem(player_id, data) {
+    var player = this.getPlayerById(player_id);
+    var item_name = data.item;
+    var resource_ids = data.resources
+    player.purchaseItem(item_name, resource_ids);
+  }
+
+  checkNextPhase(force=false) {
+    var messages = [];
+    if (this.allPlayersReady() || force) {
       this.resetPlayerReady();
+
+      // Selecting resources to farm
       if (this.phase == 0) {
         for (var i = 0; i < this.players.length; i++){
           this.players[i].farmResources();
           this.players[i].setGoals(this.resources);
         }
         this.phase = 1;
+
+      // Taking resources to market
       } else if (this.phase == 1) {
 
         this.phase = 2;
+
+      // Trading resources at market
       } else if (this.phase == 2) {
-        
+        // Remove all players from trade posts
+        for (var i=0; i < this.trading_post.length; ++i) {
+          if (this.trading_post[i] != null) {
+            this.trading_post[i].trade_post_id = null;
+            this.trading_post[i] = null;
+          }
+        }
+
+        // Move all market and trading resources to home inventory
+
+        for (var i=0; i < this.players.length; ++i) {
+          this.players[i].moveAllResourcesToHome();
+        }
         this.phase = 3;
+
+      // Buying food and victory points
       } else if (this.phase == 3) {
-        
-        this.phase = 4;
-      } else if (this.phase == 4) {
-        
+
+        messages = this.getDaysResults();
+        this.day ++;
         this.phase = 0;
       }
     }
+    return messages;
   }
 
   resetPlayerReady() {
@@ -85,8 +182,6 @@ class Game {
   }
 
   allPlayersReady() {
-    // DEBUG
-    return true;
     for (var i = 0; i < this.players.length; i++) {
       if (!this.players[i].is_ready) {
         return false;
@@ -97,6 +192,68 @@ class Game {
 
   getPlayerById(uniq_id) {
     return getById(this.players, uniq_id);
+  }
+
+  getDaysResults() {
+    var messages = [{title: "End of Day "+ this.day, body: ''}];
+    var vp_half = this.vp_goal / 2;
+    var vp_now = this.current_vp;
+    var vp_message = null;
+    var damage_message = "";
+    var total_extra_lives = 0;
+    var necromancer_names = null;
+
+    for (var i = 0; i < this.players.length; ++i) {
+      // Tally up gained VP
+      this.current_vp += this.players[i].victory_points_gained;
+      this.players[i].victory_points_gained = 0;
+
+      // Check who got poisoned 
+      var message_so_far = "";
+      if (!this.players[i].is_fed) {
+        var message_so_far = " starved"
+      }
+      this.players[i].resetHunger();
+
+      if (this.players[i].poison_used > 0) {
+        if (message_so_far != "") {
+          message_so_far += " and";
+        }
+        message_so_far += " was poisoned " + this.players[i].poison_used + " time";
+        this.players[i].clearPoison();
+      }
+      message_so_far = this.players[i].name + message_so_far + ".<br>";
+      damage_message += message_so_far;
+
+      // Tally up total lives remaining
+      if (!this.players[i].is_necromancer) {
+        total_extra_lives += this.players[i].extra_lives;
+      } else {
+        necromancer_names = necromancer_names == null ? this.players[i].name : (necromancer_names +" and "+ this.players[i].name);
+      }
+    }
+
+    // Report VP first
+    if (vp_now < vp_half && this.current_vp >= vp_half) {
+      messages.push({title: "Victory is Near!", body: "We have delivered half of the shipments to the king."})
+    }
+
+    // Report damages
+    if (damage_message == "") {
+      messages.push({title: "Status Report:", body: "No one was harmed today!"})
+    } else {
+      messages.push({title: "Status Report:", body: damage_message})
+    }
+
+    // Check if game win conditions are met
+    if (total_extra_lives == 0) {
+      // Necromancer wins
+      messages.push({title: "Necromancer Wins!", victory: 'necromancer', body: "The war still rages on and the village lays in ruin. <b>"+necromancer_names+"</b> laid waste to everyone."})
+    } else if (this.current_vp >= this.vp_goal) {
+      // Village wins
+      messages.push({title: "Village Victory!", victory: 'village', body: "The war has been won! The king is home and we have ousted <b>"+necromancer_names+"</b> for assulting the village."})
+    }
+    return messages;
   }
 
   connectNewPlayer(name, character_id) {
@@ -133,6 +290,10 @@ class Game {
 
   listOfAvailableCharacters() {
     return characters;
+  }
+
+  static activeGame() {
+    return global_game
   }
 
 }

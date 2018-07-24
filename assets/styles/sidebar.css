@@ -4,22 +4,44 @@
   left: 719px;
   border-left: thin solid gray;
   font-size: 12px;
+  background-color: lightgray;
 }
 
-.sidebar img {
-  /*opacity: .5;*/
+.sidebar img.layout {
+  opacity: .1;
 }
 
 .abs, .sidebar div {
   position: absolute;
 }
 
+.sidebar .game-state {
+  top: 5px;
+  left: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.sidebar .resource {
+  border: thin solid darkgray;
+  width: 21px;
+  height: 21px;
+}
+
 .sidebar .section {
+  background-color
   left: 0px;
   width: 240px;
-  /*border: thin solid blue;
+  border: thin solid lightgray;
   margin-top: -1px;
-  margin-left: -1px;*/
+  margin-left: -1px;
+  border-left: thin solid gray;
+  opacity: .75;
+}
+
+.sidebar .section.active {
+  background-color: white;
+  opacity: 1;
 }
 
 .sidebar .layout {
@@ -29,6 +51,10 @@
 .sidebar .header-info {
   top: 37px;
   height: 88px;
+}
+
+.header-info .purchase-option.active .resource {
+  box-shadow: 0 0 5px rgb(200, 170, 0);
 }
 
 .header-info .player-name {
@@ -135,6 +161,9 @@
   top: 8px;
 }
 
+.home-inventory .resource img.selected {
+  box-shadow: 0 0 2px 2px rgb(200, 170, 0);
+}
 
 /* Market Inventory*/
 .sidebar .market-inventory {
@@ -169,6 +198,33 @@
 
 .my-trade .resource-list {
   
+}
+
+.trade-agreement {
+  position: absolute;
+  right: 80px;
+  top: 90px;
+}
+
+.trade-agreement .my-status {
+  position: absolute;
+  width: 80px;
+}
+
+.trade-agreement .trade-ready {
+  position: absolute;
+  top: 20px;
+}
+
+.trade-agreement .trade-cancel {
+  position: absolute;
+  top: 45px;
+}
+
+.trade-agreement .their-status {
+  position: absolute;
+  width: 80px;
+  top: 70px;
 }
 
 .sidebar .tradebox .their-trade {

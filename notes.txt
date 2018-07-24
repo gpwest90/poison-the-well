@@ -12,16 +12,16 @@ Gameloop cycle:
 0. 'Morning' Resource gathering
   √ All players pick the resources they'd like to farm for the day
   # need ready indicator
-  √ Once all players are done, game phase is `noon`
+  - Once all players are done, game phase is `noon`
 
 1. 'Noon' Going to market
   √ Player goals are set (food reset, VP if blank)
-  - Players select which resources they want to take to market
+  √ Players select which resources they want to take to market
   - Once a player is done, their character appears at the market with their resources
   - Once all players are done, the game phase is `evening`
 
 2. 'Evening' Trading
-  - players are free to trade until they're done
+  √ players are free to trade until they're done
   - Once a player is done, they're character and resources dissapear from the market
   - Once all players are done, the game phase is `night`
 
@@ -36,3 +36,43 @@ Gameloop cycle:
   - If enough VP have been bought, the traders win
   - Game phase is `morning`
   
+
+
+  Cycle TODO:
+
+
+  - continue loop once all players are ready
+  - fix vertical trade spot positioning
+  - public display of each player's health
+  - add necromancer specific sidebar
+    - poison purchase
+    - zombie purchase
+
+
+  0:
+    - damaged players dont get all their resources
+
+  1:
+    - make resources not appear at market when ready
+    -- move market resource 8 block
+    -- add additional resource blocks for excess
+
+  2: 
+    -?- remove player and resources when done
+    -- publicly show trade
+    - a player done for the day is removed from trading posts
+    - a player marked as done can't keep participating
+
+  3:
+    - message on VP success purchase
+    - message on Food success purchase
+    - only highlight purchase combo so far
+
+  4:
+    - game end reset
+
+
+
+
+
+

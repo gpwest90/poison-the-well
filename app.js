@@ -12,12 +12,13 @@ const Game = require('./models/game');
 var game = new Game();
 
 // Test Data
-game.connectNewPlayer("Page", 0);
-game.connectNewPlayer("Richard", 1);
-game.connectNewPlayer("Evan", 2);
-game.connectNewPlayer("Sam", 3);
-game.connectNewPlayer("John", 4);
-game.connectNewPlayer("Elliot", 5);
+game.connectNewPlayer("Page West", 0);
+game.connectNewPlayer("Richard Dyer", 1);
+game.connectNewPlayer("Evan Martinez", 2);
+game.connectNewPlayer("Sam Blevins Dyer", 3);
+game.connectNewPlayer("John a pizza pie Daidone", 4);
+game.connectNewPlayer("Elliot Always Selling Haag", 5);
+game.startGame();
 //----
 
 app.use(bodyParser.urlencoded({
@@ -52,8 +53,8 @@ io.on('connection', function(client) {
 
   client.on('player-ready', function(player_id, data) {
     game.markPlayerReady(player_id, data);
-    game.checkNextPhase();
-    io.sockets.emit('match-data', { game: game });
+    messages = game.checkNextPhase(data.next_phase);
+    io.sockets.emit('match-data', { game: game, messages: messages });
   });
 
   client.on('resource-selected', function(player_id, data) {
@@ -61,10 +62,32 @@ io.on('connection', function(client) {
     client.emit('match-data', { game: game });
   });
 
+  client.on('resource-poisoned', function(player_id, data) {
+    game.playerPoisonedResource(player_id, data);
+    client.emit('match-data', { game: game });
+  });
+
   client.on('trade-spot-selected', function(player_id, data) {
     game.playerSelectedTradeSpot(player_id, data);
     // TODO Only emit if change was made
     io.sockets.emit('match-data', { game: game });
+  });
+
+  client.on('trade-cancelled', function(player_id) {
+    game.playerCancelledTrade(player_id);
+    // TODO Only emit if change was made
+    io.sockets.emit('match-data', { game: game });
+  });
+
+  client.on('trade-ready', function(player_id, data) {
+    game.playerReadyToTrade(player_id, data);
+    // TODO Only emit if change was made
+    io.sockets.emit('match-data', { game: game });
+  });
+
+  client.on('player-purchase', function(player_id, data) {
+    game.playerPurchaseItem(player_id, data);
+    client.emit('match-data', { game: game });
   });
 });
 
@@ -133,6 +156,7 @@ app.get('/game', (req, res) => {
   if (game.has_started == false) {
     res.render('games/show', {
       game: game,
+      vp_needed: game.numPlayers() * 4,
       root_url: 'localhost:'+port
     });
   } else {
