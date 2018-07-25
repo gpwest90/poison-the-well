@@ -24,33 +24,33 @@ class Player {
     this.data_cache = null;
     this.farming = [];
     this.home_inventory = [
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource(),
-      new Resource('Poison'),
       null,
-      new Resource('Poison'),
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource()
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
     ]
     this.market_inventory = [
-      Resource.generateRandomResource(),
       null,
       null,
       null,
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource(),
-      Resource.generateRandomResource()
+      null,
+      null,
+      null,
+      null,
+      null
     ];
 
     this.trade_post_id = null;
     this.trade_ready = false;
     this.trade_inventory = [
-      Resource.generateRandomResource(),
       null,
-      Resource.generateRandomResource()
+      null,
+      null
     ]
 
     this.image = "<img src='images/characters/"+character.name+".png'>";

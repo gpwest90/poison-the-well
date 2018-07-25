@@ -182,7 +182,7 @@ app.get('/game', (req, res) => {
   if (game.has_started) {
     res.render('games/show', {
       game: game,
-      vp_needed: game.numPlayers() * 4,
+      vp_needed: game.vp_goal,
       root_url: 'localhost:'+port
     });
   } else {
