@@ -1,4 +1,5 @@
 const Resource = require('./resource');
+const MainGame = require('./game');
 
 class Player {
   constructor(name, character) {
@@ -18,6 +19,7 @@ class Player {
     this.is_fed = false;
     this.poison_used = 0;
     this.victory_points_gained = 0;
+    this.zombie_attacks = 0;
 
     this.data_cache = null;
     this.farming = [];
@@ -54,6 +56,14 @@ class Player {
     this.image = "<img src='images/characters/"+character.name+".png'>";
   }
 
+  destroy() {
+    for (var i=0; i < this.home_inventory.length; ++i) {
+      if (this.home_inventory[i] != null) {
+        this.home_inventory[i].destroy();
+      }
+    }
+  }
+
   farmResources() {
     for (var i = 0; i < this.farming.length; i++) {
       if (i > this.extra_lives) {
@@ -72,6 +82,11 @@ class Player {
   clearPoison() {
     this.takeDamage(this.poison_used);
     this.poison_used = 0;
+  }
+
+  clearZombie() {
+    this.takeDamage(this.zombie_attacks);
+    this.zombie_attacks = 0;
   }
 
   resetHunger() {
@@ -118,7 +133,7 @@ class Player {
     var poison_resource = this.findResource(poison_id);
     var target_resource = this.findResource(resource_id);
 
-    if (poison_resource == null || target_resource == null) {
+    if (poison_resource == null || target_resource == null || target_resource.is_poisoned) {
       return false;
     } else {
       this.destroyResource(poison_id);
@@ -145,7 +160,7 @@ class Player {
     }
   }
 
-  purchaseItem(item_name, resource_ids) {
+  purchaseItem(item_name, resource_ids, target_player_id=null) {
     // TODO validate purchase
     for (var i=0; i < resource_ids.length; ++i) {
       this.spendResource(resource_ids[i]);
@@ -158,12 +173,12 @@ class Player {
     } else if (item_name == "victory-point") {
       this.victory_goal = [];
       this.victory_points_gained++;
-      addToFirstBlank(this.home_inventory, new Resource("Poison"));
     } else if (item_name == "poison") {
       this.poison_goal = [];
       addToFirstBlank(this.home_inventory, new Resource("Poison"));
     } else if (item_name == "zombie") {
       this.zombie_goal = [];
+      MainGame.getActiveGame().zombieAttack(target_player_id);
     }
   }
 
@@ -188,20 +203,43 @@ class Player {
   }
 
   setGoals(resources) {
-    // Food goal changes each round
-    var item1 = resources[Math.floor(Math.random()*resources.length)];
-    var item2 = resources[Math.floor(Math.random()*resources.length)];
-    var item3 = resources[Math.floor(Math.random()*resources.length)];
-    var item4 = resources[Math.floor(Math.random()*resources.length)];
-    this.food_goal = [item1, item2, item3, item4];
+    if (this.is_necromancer) {
+      // Food goal changes each round
+      var item1 = resources[Math.floor(Math.random()*resources.length)];
+      var item2 = resources[Math.floor(Math.random()*resources.length)];
+      this.food_goal = [item1, item2];
 
-    // Victory goal only changes after being 'bought'
-    if (this.victory_goal.length == 0) {
+      // Poison goal only changes after being 'bought'
+      if (this.poison_goal.length == 0) {
+        var item1 = resources[Math.floor(Math.random()*resources.length)];
+        var item2 = resources[Math.floor(Math.random()*resources.length)];
+        this.poison_goal = [item1, item2];
+      }
+
+      // Zombie goal only changes after being 'bought'
+      if (this.zombie_goal.length == 0) {
+        var item1 = resources[Math.floor(Math.random()*resources.length)];
+        var item2 = resources[Math.floor(Math.random()*resources.length)];
+        var item3 = resources[Math.floor(Math.random()*resources.length)];
+        var item4 = resources[Math.floor(Math.random()*resources.length)];
+        this.zombie_goal = [item1, item2, item3, item4];
+      }
+    } else {
+      // Food goal changes each round
       var item1 = resources[Math.floor(Math.random()*resources.length)];
       var item2 = resources[Math.floor(Math.random()*resources.length)];
       var item3 = resources[Math.floor(Math.random()*resources.length)];
       var item4 = resources[Math.floor(Math.random()*resources.length)];
-      this.victory_goal = [item1, item2, item3, item4];
+      this.food_goal = [item1, item2, item3, item4];
+
+      // Victory goal only changes after being 'bought'
+      if (this.victory_goal.length == 0) {
+        var item1 = resources[Math.floor(Math.random()*resources.length)];
+        var item2 = resources[Math.floor(Math.random()*resources.length)];
+        var item3 = resources[Math.floor(Math.random()*resources.length)];
+        var item4 = resources[Math.floor(Math.random()*resources.length)];
+        this.victory_goal = [item1, item2, item3, item4];
+      }
     }
   }
 

@@ -12,13 +12,13 @@ const Game = require('./models/game');
 var game = new Game();
 
 // Test Data
-game.connectNewPlayer("Page West", 0);
-game.connectNewPlayer("Richard Dyer", 1);
-game.connectNewPlayer("Evan Martinez", 2);
-game.connectNewPlayer("Sam Blevins Dyer", 3);
-game.connectNewPlayer("John a pizza pie Daidone", 4);
-game.connectNewPlayer("Elliot Always Selling Haag", 5);
-game.startGame();
+// game.connectNewPlayer("Page West", 0);
+// game.connectNewPlayer("Richard Dyer", 1);
+// game.connectNewPlayer("Evan Martinez", 2);
+// game.connectNewPlayer("Sam Blevins Dyer", 3);
+// game.connectNewPlayer("John a pizza pie Daidone", 4);
+// game.connectNewPlayer("Elliot Always Selling Haag", 5);
+// game.startGame();
 //----
 
 app.use(bodyParser.urlencoded({
@@ -55,11 +55,19 @@ io.on('connection', function(client) {
     game.markPlayerReady(player_id, data);
     messages = game.checkNextPhase(data.next_phase);
     io.sockets.emit('match-data', { game: game, messages: messages });
+    if (game.concluded) {
+      game.destroy();
+      game = new Game();
+    }
   });
 
   client.on('resource-selected', function(player_id, data) {
     game.playerSelectedResource(player_id, data);
-    client.emit('match-data', { game: game });
+    if (game.phase == 2) {
+      io.sockets.emit('match-data', { game: game });
+    } else {
+      client.emit('match-data', { game: game });
+    }
   });
 
   client.on('resource-poisoned', function(player_id, data) {
@@ -89,6 +97,11 @@ io.on('connection', function(client) {
     game.playerPurchaseItem(player_id, data);
     client.emit('match-data', { game: game });
   });
+
+  client.on('start-game', function() {
+    game.startGame();
+    io.sockets.emit('game-started');
+  })
 });
 
 
@@ -121,12 +134,21 @@ app.get('/', (req, res) => {
     errors: req.query.errors,
     characters: game.listOfAvailableCharacters(),
     player_count: game.numPlayers(),
+    game_has_started: game.has_started,
     root_url: 'localhost:'+port
   })
 })
 
 // Players
 app.post('/player', (req, res) => {
+  if (game.has_started) {
+    return res.redirect('/?errors='+"The game started without you :(");
+  }
+
+  if (req.body.name == '') {
+    return res.redirect('/?errors='+"You must name your character");
+  }
+
   var player = game.connectNewPlayer(req.body.name, parseInt(req.body.character_id));
   if (player == null) {
     var errors = "Character was already selected";
@@ -144,6 +166,10 @@ app.post('/player', (req, res) => {
 })
 
 app.get('/players', (req, res) => {
+  if (game.has_started) {
+    return res.redirect('/game');
+  }
+
   res.render('players/index', {
     players: game.players,
     root_url: 'localhost:'+port
@@ -153,7 +179,7 @@ app.get('/players', (req, res) => {
 // Game
 
 app.get('/game', (req, res) => {
-  if (game.has_started == false) {
+  if (game.has_started) {
     res.render('games/show', {
       game: game,
       vp_needed: game.numPlayers() * 4,

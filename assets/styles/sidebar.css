@@ -5,6 +5,13 @@
   border-left: thin solid gray;
   font-size: 12px;
   background-color: lightgray;
+  width: 241px;
+  height: 720px;
+}
+
+.sidebar .title {
+  top: 0px;
+  left: 5px;
 }
 
 .sidebar img.layout {
@@ -37,6 +44,7 @@
   margin-left: -1px;
   border-left: thin solid gray;
   opacity: .75;
+  padding-top: 15px;
 }
 
 .sidebar .section.active {
@@ -53,13 +61,18 @@
   height: 88px;
 }
 
-.header-info .purchase-option.active .resource {
+.header-info .purchase-option.active .resource.active {
   box-shadow: 0 0 5px rgb(200, 170, 0);
 }
 
 .header-info .player-name {
   left: 8px;
   top: 0px;
+}
+
+.header-info .player-name span {
+  color: rgb(180,255,0);
+  text-shadow: 0px 0px 3px rgb(0,0,0), 0px 0px 3px rgb(0,0,0);
 }
 
 .header-info .player-image {
@@ -70,12 +83,24 @@
 
 .header-info .food-requirement {
   left: 51px;
-  top: 12px;
+  top: 16px;
 }
 
 .header-info .victory-point-requirement {
   left: 51px;
-  top: 41px;
+  top: 45px;
+}
+
+.header-info .poison-requirement {
+  display: none;
+  left: 51px;
+  top: 45px;
+}
+
+.header-info .zombie-requirement {
+  display: none;
+  left: 51px;
+  top: 74px;
 }
 
 .header-info .resource {
@@ -83,9 +108,11 @@
 }
 
 .header-info .label {
-  left: 0px;
-  top: 8px;
-  width: 73px;
+  left: -4px;
+  top: 4px;
+  width: 72px;
+  font-size: 10px;
+  text-align: right;
 }
 
 .header-info .resource-list {
@@ -94,12 +121,8 @@
 
 /* Worker Style */
 .sidebar .worker-info {
-  top: 162px;
-  height: 91px;
-}
-
-.worker-info .title {
-  top: -10px;
+  top: 147px;
+  height: 105px;
 }
 
 .worker-info .worker {
@@ -122,12 +145,18 @@
 }
 
 .worker-info .strikes {
-  top: 0px;
+  top: 18px;
   right: 0px;
 }
 
 .worker-info .worker-done {
-  top: 80px;
+  top: 95px;
+  right: 8px;
+}
+
+.worker-info .worker-done-pushed {
+  display: none;
+  top: 95px;
   right: 8px;
 }
 
@@ -147,18 +176,14 @@
 
 /* Home Inventory */
 .sidebar .home-inventory {
-  top: 292px;
-  height: 64px;
+  top: 277px;
+  height: 70px;
 }
-
-.home-inventory .title {
-  top: -10px;
-}
-
 
 .home-inventory .resource-long-list {
   left: 8px;
   top: 8px;
+  position: relative;
 }
 
 .home-inventory .resource img.selected {
@@ -167,17 +192,14 @@
 
 /* Market Inventory*/
 .sidebar .market-inventory {
-  top: 391px;
+  top: 376px;
   height: 64px;
-}
-
-.market-inventory .title {
-  top: -10px;
 }
 
 .market-inventory .resource-list {
   top: 8px;
-  left: 66px;
+  left: 70px;
+  position: relative;
 }
 
 
@@ -185,6 +207,7 @@
 .sidebar .tradebox {
   bottom: 0px;
   height: 260px;
+  padding-top: 0px;
 }
 
 .tradebox .title {
@@ -242,8 +265,8 @@
 }
 
 .their-trade .player-name {
-  left: -90px;
-  top: -30px;
+  left: -110px;
+  bottom: 10px;
 }
 
 

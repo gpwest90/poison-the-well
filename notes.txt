@@ -39,18 +39,14 @@ Gameloop cycle:
 
 
   Cycle TODO:
+  - remove everyone is done
 
-
-  - continue loop once all players are ready
-  - fix vertical trade spot positioning
-  - public display of each player's health
-  - add necromancer specific sidebar
-    - poison purchase
-    - zombie purchase
+  - start game button
+  - get constant player from game menu
+  - game end reset
 
 
   0:
-    - damaged players dont get all their resources
 
   1:
     - make resources not appear at market when ready
@@ -60,16 +56,15 @@ Gameloop cycle:
   2: 
     -?- remove player and resources when done
     -- publicly show trade
-    - a player done for the day is removed from trading posts
-    - a player marked as done can't keep participating
+    
 
   3:
     - message on VP success purchase
     - message on Food success purchase
-    - only highlight purchase combo so far
+    
 
   4:
-    - game end reset
+    
 
 
 

@@ -1,7 +1,4 @@
-const Player = require('./player');
-const Character = require('./character');
 
-var characters = Character.createCharacters();
 var global_game = null;
 
 class Game {
@@ -17,10 +14,21 @@ class Game {
     this.day = 1;
     this.vp_goal = 16;
     this.current_vp = 0;
+    this.concluded = false;
     global_game = this;
+    characters = Character.createCharacters();
+  }
+
+  destroy() {
+    for (var i=0; i < this.players.length; ++i) {
+      if (this.players[i] != null) {
+        this.players[i].destroy();
+      }
+    }
   }
 
   startGame() {
+    this.has_started = true;
     this.player_count = this.players.length;
     this.vp_goal = this.player_count * 3;
     this.players[Math.floor(Math.random()*this.players.length)].is_necromancer = true;
@@ -50,14 +58,14 @@ class Game {
   playerPoisonedResource(player_id, data) {
     var player = this.getPlayerById(player_id);
     if (player != null) {
-      player.poisonResource(data.resource_id, data.poison_id);
+      player.poisonResource(data.resource_id, data.poison_id)
     }
   }
 
   playerSelectedTradeSpot(player_id, data) {
     var player = this.getPlayerById(player_id);
     var spot_id = data.trade_spot_id;
-    if (this.phase == 2 && player != null && spot_id != null) {
+    if (this.phase == 2 && player != null && spot_id != null && !player.is_ready) {
       if (this.trading_post[spot_id] == null) {
         // Add player to trading post
         this.trading_post[spot_id] = player
@@ -105,7 +113,6 @@ class Game {
     var trade_state = data.trade_ready
     if (this.phase == 2 && player != null) {
       player.trade_ready = trade_state;
-      // TODO: resolve trade if both ready
       if (player.trade_ready) {
         var post_id = player.trade_post_id;
         var other_post_id = (post_id % 2 == 0) ? post_id + 1 : post_id - 1;
@@ -126,7 +133,15 @@ class Game {
     var player = this.getPlayerById(player_id);
     var item_name = data.item;
     var resource_ids = data.resources
-    player.purchaseItem(item_name, resource_ids);
+    var target_player_id = data.target_player_id
+    player.purchaseItem(item_name, resource_ids, target_player_id);
+  }
+
+  zombieAttack(player_id) {
+    var player = this.getPlayerById(player_id);
+    if (player != null) {
+      player.zombie_attacks ++;
+    }
   }
 
   checkNextPhase(force=false) {
@@ -222,8 +237,19 @@ class Game {
         message_so_far += " was poisoned " + this.players[i].poison_used + " time";
         this.players[i].clearPoison();
       }
-      message_so_far = this.players[i].name + message_so_far + ".<br>";
-      damage_message += message_so_far;
+
+      if (this.players[i].zombie_attacks > 0) {
+        if (message_so_far != "") {
+          message_so_far += " and";
+        }
+        message_so_far += " was attacked by zombies " + this.players[i].zombie_attacks + " time";
+        this.players[i].clearZombie();
+      }
+
+      if (message_so_far != ""){
+        message_so_far = this.players[i].name + message_so_far + ".<br>";
+        damage_message += message_so_far;
+      }
 
       // Tally up total lives remaining
       if (!this.players[i].is_necromancer) {
@@ -249,9 +275,11 @@ class Game {
     if (total_extra_lives == 0) {
       // Necromancer wins
       messages.push({title: "Necromancer Wins!", victory: 'necromancer', body: "The war still rages on and the village lays in ruin. <b>"+necromancer_names+"</b> laid waste to everyone."})
+      this.concluded = true;
     } else if (this.current_vp >= this.vp_goal) {
       // Village wins
       messages.push({title: "Village Victory!", victory: 'village', body: "The war has been won! The king is home and we have ousted <b>"+necromancer_names+"</b> for assulting the village."})
+      this.concluded = true;
     }
     return messages;
   }
@@ -292,8 +320,8 @@ class Game {
     return characters;
   }
 
-  static activeGame() {
-    return global_game
+  static getActiveGame() {
+    return global_game;
   }
 
 }
@@ -304,3 +332,8 @@ var getById = function(array, uniq_id) {
 }
 
 module.exports = Game;
+
+const Player = require('./player');
+const Character = require('./character');
+
+var characters;

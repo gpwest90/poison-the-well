@@ -8,6 +8,10 @@
   {{~/each~}}
 </div>
 
+<div class='padded text-center'>
+  <button class='start'>Start Game</button>
+</div>
+
 <script>
 
 var socket = io.connect("{{root_url}}");
@@ -18,8 +22,20 @@ var player_id = localStorage.getItem("playerID");
 // });
 
 socket.on('new-player', function(data) {
-  $('#player-list').append("<div class='player player__waiting text-center wide4 spacer-bottom'><div class='player__name'>"+data.player.name+"</div><div class='player__sprite'><img src='images/characters"+data.player.character.name+".png'></div><div class='player__role'>"+data.player.character.name+"</div></div>");
+  $('#player-list').append("<div class='player__waiting text-center wide4 spacer-bottom'><div class='player__name'>"+data.player.name+"</div><div class='player__sprite'><img src='images/characters/"+data.player.character.name+".png'></div><div class='player__role'>"+data.player.character.name+"</div></div>");
 });
+
+socket.on('game-started', function() {
+  window.location.replace("/game");
+});
+
+$('.start').click(function(){
+  startGame();
+})
+
+function startGame() {
+  socket.emit('start-game');
+}
 
 // socket.on('reconnect', function() {
 //   sock

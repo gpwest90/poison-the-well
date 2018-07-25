@@ -1,26 +1,35 @@
 <div id='join-game' class='hidden padded'>
-  <h2 class='text-center'>Welcome new player! There are currently {{player_count}} other players waiting.<br>Enter your name and join:</h2>
+  <h1 class='text-center'>Poison the Well</h1>
+  {{#if game_has_started}}
+    <h2 class='text-center'>The game has already started!</h2>
+    {{#if errors}}
+      <p class='errors'>{{errors}}</p>
+    {{/if}}
+    <a class='spectate' href='/game'>Spectate Game</a>
+  {{else}}
+    <h2 class='text-center'>Welcome new player! There are currently {{player_count}} other players waiting.<br>Enter your name and join:</h2>
 
-  {{#if errors}}
-    <p class='errors'>{{errors}}</p>
+    {{#if errors}}
+      <p class='errors'>{{errors}}</p>
+    {{/if}}
+    <form method="POST" action="/player" class="form">
+      <label>Name:</label>
+      <input type="text" id="name" name="name" value="" />
+      <div><label>Role:</label></div><br>
+        {{~#each characters~}}
+          <div class="player__waiting text-center wide4 spacer-bottom {{#if this.is_selected}}disabled{{/if}}">
+            <div class='player__sprite'>
+              <img src='images/characters/{{this.name}}.png'>
+            </div>
+            <div class='player__role'>
+              {{this.name}}
+            </div>
+            <input type="radio" name="character_id" value="{{this.uniq_id}}" {{#if this.is_selected}}disabled{{/if}}>
+          </div>        
+        {{~/each~}}
+      <button name="save" type="submit">Join</button>
+    </form>
   {{/if}}
-  <form method="POST" action="/player" class="form">
-    <label>Name:</label>
-    <input type="text" id="name" name="name" value="Richard" />
-    <div><label>Role:</label></div><br>
-      {{~#each characters~}}
-        <div class="player__waiting text-center wide4 spacer-bottom {{#if this.is_selected}}disabled{{/if}}">
-          <div class='player__sprite'>
-            <img src='images/characters/{{this.name}}.png'>
-          </div>
-          <div class='player__role'>
-            {{this.name}}
-          </div>
-          <input type="radio" name="character_id" value="{{this.uniq_id}}" {{#if this.is_selected}}disabled{{/if}}>
-        </div>        
-      {{~/each~}}
-    <button name="save" type="submit">Join</button>
-  </form>
 </div>
 
 <div id='reconnect-to-game' class='hidden text-center'>
@@ -31,6 +40,7 @@
 <script>
 var socket = io.connect("{{root_url}}");
 var player_id = localStorage.getItem("playerID");
+localStorage.removeItem("intro_seen");
 
 socket.on('connect', function(data) {
   socket.emit('join', player_id);
@@ -39,11 +49,13 @@ socket.on('connect', function(data) {
 socket.on('not-found', function() {
   var menu = document.getElementById("join-game");
   menu.style.display = "block";
+  localStorage.removeItem("playerID");
 });
 
 socket.on('reconnect', function() {
   var menu = document.getElementById("reconnect-to-game");
   menu.style.display = "block";
+  $('.spectate').hide();
 });
 
 
