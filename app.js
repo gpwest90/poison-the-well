@@ -9,6 +9,8 @@ const io = require('socket.io')(server);
 
 const Game = require('./models/game');
 
+const root_url = '192.168.1.49:3005'
+
 var game = new Game();
 
 // Test Data
@@ -135,7 +137,7 @@ app.get('/', (req, res) => {
     characters: game.listOfAvailableCharacters(),
     player_count: game.numPlayers(),
     game_has_started: game.has_started,
-    root_url: 'localhost:'+port
+    root_url: root_url
   })
 })
 
@@ -160,7 +162,7 @@ app.post('/player', (req, res) => {
     io.sockets.emit('new-player',{player: player});
     res.render('players/new', {
       player: player,
-      root_url: 'localhost:'+port
+      root_url: root_url
     })
   }
 })
@@ -172,7 +174,7 @@ app.get('/players', (req, res) => {
 
   res.render('players/index', {
     players: game.players,
-    root_url: 'localhost:'+port
+    root_url: root_url
   })
 })
 
@@ -183,7 +185,7 @@ app.get('/game', (req, res) => {
     res.render('games/show', {
       game: game,
       vp_needed: game.vp_goal,
-      root_url: 'localhost:'+port
+      root_url: root_url
     });
   } else {
     res.redirect('/?errors=' + "No game has started yet");
