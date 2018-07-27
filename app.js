@@ -6,8 +6,12 @@ const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 const server = require('http').createServer(app);  
 const io = require('socket.io')(server);
+const writer = require("fs")
 
 const Game = require('./models/game');
+
+const this_root = "192.168.1.49:3005"
+// var this_root = "https://e303a071.ngrok.io"
 
 var game = new Game();
 
@@ -135,32 +139,46 @@ app.get('/', (req, res) => {
     characters: game.listOfAvailableCharacters(),
     player_count: game.numPlayers(),
     game_has_started: game.has_started,
-    root_url: 'localhost:'+port
+    root_url: this_root
   })
 })
 
 // Players
 app.post('/player', (req, res) => {
-  if (game.has_started) {
-    return res.redirect('/?errors='+"The game started without you :(");
-  }
+  var errors = [];
 
   if (req.body.name == '') {
-    return res.redirect('/?errors='+"You must name your character");
+    errors.push("You must name your character");
   }
 
+  if (req.body['resource-name'] == '') {
+    errors.push("You must name your resource");
+  }
   var player = game.connectNewPlayer(req.body.name, parseInt(req.body.character_id));
   if (player == null) {
-    var errors = "Character was already selected";
     if (req.body.character_id == null) {
-      errors = "Please select a character";
+      errors.push("Please select a character");
+    } else {
+      errors.push("Character was already selected");
     }
-    res.redirect('/?errors='+errors);
+  }
+
+  if (game.has_started) {
+    errors = ["The game started without you :("];
+  }
+
+  if (errors.length > 0) {
+    return res.redirect('/?errors='+errors.join(', '));
   } else {
+    var base64Data = req.body['resource-data'].replace(/^data:image\/png;base64,/, "");
+    writer.writeFile("out.png", base64Data, 'base64', function(err) {
+      console.log(err);
+    });
+
     io.sockets.emit('new-player',{player: player});
     res.render('players/new', {
       player: player,
-      root_url: 'localhost:'+port
+      root_url: this_root
     })
   }
 })
@@ -172,7 +190,7 @@ app.get('/players', (req, res) => {
 
   res.render('players/index', {
     players: game.players,
-    root_url: 'localhost:'+port
+    root_url: this_root
   })
 })
 
@@ -183,7 +201,7 @@ app.get('/game', (req, res) => {
     res.render('games/show', {
       game: game,
       vp_needed: game.vp_goal,
-      root_url: 'localhost:'+port
+      root_url: this_root
     });
   } else {
     res.redirect('/?errors=' + "No game has started yet");

@@ -53,3 +53,57 @@ h1 {
 .disabled {
   opacity: 0.5;
 }
+
+.save-button {
+  display:inline-block;
+  color:#444;
+  border:1px solid #CCC;
+  background:#DDD;
+  box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+  cursor:pointer;
+  vertical-align:middle;
+  max-width: 100px;
+  padding: 5px;
+  text-align: center;
+}
+
+.save-button:active {
+  box-shadow: none; 
+}
+
+.resource-creation {
+  padding-top: 20px;
+}
+
+canvas {
+  border: thin solid gray;
+}
+
+#color-input {
+  display: none;
+}
+#color-label {
+  margin-left: 15px;
+  position: absolute;
+  height: 30px;
+  width: 50px;
+} 
+#color-input:checked ~ #color-picker {
+  opacity: 1;
+}
+#color-picker {
+  display: inline-block;
+  margin-left: 70px;
+  left: 70px; 
+  background-color: white;
+  height: 150px;
+  width: 200px;
+  border: solid 1px #ccc;
+  opacity: 0;
+  padding: 5px;
+}
+canvas:hover {
+  cursor: crosshair;
+}
+
+
