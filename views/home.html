@@ -19,7 +19,7 @@
         {{~#each characters~}}
           <div class="player__waiting text-center wide4 spacer-bottom {{#if this.is_selected}}disabled{{/if}}">
             <div class='player__sprite'>
-              <img src='images/characters/{{this.name}}.png'>
+              <img src='{{this.file_path}}'>
             </div>
             <div class='player__role'>
               {{this.name}}

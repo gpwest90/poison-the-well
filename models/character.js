@@ -5,6 +5,7 @@ class Character {
     this.name = name;
     this.resource = resource;
     this.is_selected = false;
+    this.file_path = '/images/characters/'+this.name.toLowerCase() +'.png'
   }
 
   static createCharacters() {

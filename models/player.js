@@ -53,7 +53,7 @@ class Player {
       null
     ]
 
-    this.image = "<img src='images/characters/"+character.name+".png'>";
+    this.image = "<img src='"+this.character.file_path+"'>";
   }
 
   destroy() {

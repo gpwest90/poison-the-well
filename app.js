@@ -9,6 +9,7 @@ const io = require('socket.io')(server);
 
 const Game = require('./models/game');
 
+// const root_url = 'localhost:3005'
 const root_url = 'http://18.188.126.103:3005/'
 
 var game = new Game();

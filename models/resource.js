@@ -10,7 +10,7 @@ class Resource {
                   " resource-"+this.uniq_id+
                   "' data-resource-type='"+this.name+
                   "' data-resource-id='"+this.uniq_id+
-                  "'src='images/resources/"+this.name+".png'>";
+                  "'src='images/resources/"+this.name.toLowerCase()+".png'>";
   }
 
   becamePoisoned() {
@@ -19,7 +19,7 @@ class Resource {
                   " resource-"+this.uniq_id+
                   "' data-resource-type='"+this.name+
                   "' data-resource-id='"+this.uniq_id+
-                  "'src='images/resources/"+this.name+".png'>";
+                  "'src='images/resources/"+this.name.toLowerCase()+".png'>";
   }
 
   destroy() {
