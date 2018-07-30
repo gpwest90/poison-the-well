@@ -226,11 +226,12 @@ class Player {
       }
     } else {
       // Food goal changes each round
-      var item1 = resources[Math.floor(Math.random()*resources.length)];
-      var item2 = resources[Math.floor(Math.random()*resources.length)];
-      var item3 = resources[Math.floor(Math.random()*resources.length)];
-      var item4 = resources[Math.floor(Math.random()*resources.length)];
-      this.food_goal = [item1, item2, item3, item4];
+      var item = resources[Math.floor(Math.random()*resources.length)];
+      this.food_goal = [item];
+      for (var i=0; i < this.extra_lives; ++i) {
+        var item = resources[Math.floor(Math.random()*resources.length)];
+        this.food_goal.push(item);
+      }
 
       // Victory goal only changes after being 'bought'
       if (this.victory_goal.length == 0) {
